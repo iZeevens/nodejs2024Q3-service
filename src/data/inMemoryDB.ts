@@ -1,5 +1,5 @@
 const db = {
-  users: {},
+  user: [],
 };
 
 export default db;
