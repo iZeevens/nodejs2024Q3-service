@@ -16,7 +16,7 @@ function uuidValidation({ uuid, data }: IuuidValidation) {
     return ValidationResult.invalid;
   }
 
-  data.id === uuid ? ValidationResult.valid : ValidationResult.notExist;
+  return data.id === uuid ? ValidationResult.valid : ValidationResult.notExist;
 }
 
 export default uuidValidation;
