@@ -34,6 +34,11 @@ interface Favorites {
   tracks: string[]; // favorite tracks ids
 }
 
+interface CreateUserDto {
+  login: string;
+  password: string;
+}
+
 interface DBTypes {
   user: User[];
   track: Track[];
@@ -42,4 +47,4 @@ interface DBTypes {
   favs: Favorites[];
 }
 
-export { User, Artist, Track, Album, Favorites, DBTypes };
+export { User, CreateUserDto, Artist, Track, Album, Favorites, DBTypes };

@@ -9,7 +9,7 @@ import {
 } from 'src/data/types/dataTypes';
 
 @Controller()
-export default class UseController {
+export default class UseGetController {
   constructor(private readonly appService: CommonService) {}
 
   @Get('user')
