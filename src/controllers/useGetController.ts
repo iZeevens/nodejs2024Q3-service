@@ -1,32 +1,39 @@
 import { Controller, Get } from '@nestjs/common';
 import CommonService from 'src/services/commonServices';
+import {
+  User,
+  Track,
+  Artist,
+  Album,
+  Favorites,
+} from 'src/data/types/dataTypes';
 
 @Controller()
 export default class UseController {
   constructor(private readonly appService: CommonService) {}
 
   @Get('user')
-  getUsers(): Array<object> {
+  getUsers(): User[] {
     return this.appService.getAll('user');
   }
 
   @Get('track')
-  getTracks(): Array<object> {
+  getTracks(): Track[] {
     return this.appService.getAll('track');
   }
 
   @Get('artist')
-  getArtists(): Array<object> {
+  getArtists(): Artist[] {
     return this.appService.getAll('artist');
   }
 
   @Get('album')
-  getAlbums(): Array<object> {
+  getAlbums(): Album[] {
     return this.appService.getAll('album');
   }
 
   @Get('favs')
-  getFavs(): Array<object> {
+  getFavs(): Favorites[] {
     return this.appService.getAll('favs');
   }
 }
