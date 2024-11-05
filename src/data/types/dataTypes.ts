@@ -34,4 +34,12 @@ interface Favorites {
   tracks: string[]; // favorite tracks ids
 }
 
-export { User, Artist, Track, Album, Favorites };
+interface DBTypes {
+  user: User[];
+  track: Track[];
+  artist: Artist[];
+  album: Album[];
+  favs: Favorites[];
+}
+
+export { User, Artist, Track, Album, Favorites, DBTypes };

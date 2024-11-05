@@ -1,4 +1,6 @@
-const db = {
+import { DBTypes } from './types/dataTypes';
+
+const db: DBTypes = {
   user: [],
   track: [],
   artist: [],
