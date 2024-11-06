@@ -34,7 +34,8 @@ export default class CommonService {
         createdAt: date,
         updatedAt: date,
       } as User;
-      db['user'].push(postData as User);
+
+      return db['user'].push(postData as User);
     } else if (
       entityType === 'artist' &&
       dataValidation.artistValidation(data as Artist)

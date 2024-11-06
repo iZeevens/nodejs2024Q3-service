@@ -7,15 +7,19 @@ import {
 } from 'src/data/types/dataTypes';
 
 const validation = (data: unknown) =>
-  typeof data === 'object' || data === null ? false : true;
+  typeof data === 'object' && data !== null ? true : false;
 
 const dataValidation = {
   userValidation: (data: CreateUserDto): data is CreateUserDto => {
+    // console.log('valid:', validation(data));
     if (!validation(data)) return false;
 
     const isValidLogin = 'login' in data && typeof data.login === 'string';
     const isValidPassword =
       'password' in data && typeof data.password === 'string';
+
+    // console.log(`isLogin ${isValidLogin}`);
+    // console.log(`isLogin ${isValidPassword}`);
 
     return isValidLogin && isValidPassword;
   },
@@ -25,7 +29,7 @@ const dataValidation = {
 
     const isValidName = 'name' in data && typeof data.name === 'string';
     const isValidGrammy =
-      'duration' in data && typeof data.duration === 'boolean';
+      'duration' in data && typeof data.grammy === 'boolean';
 
     return isValidName && isValidGrammy;
   },
