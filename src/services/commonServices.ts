@@ -11,6 +11,7 @@ import {
 } from 'src/data/types/dataTypes';
 import db from 'src/data/inMemoryDB';
 import dataValidation from 'src/validations/dataValidation';
+import ResponseHelper from 'src/helpers/responseHelper';
 
 @Injectable()
 export default class CommonService {
@@ -41,9 +42,8 @@ export default class CommonService {
       } as User;
 
       db['user'].push(postData as User);
-      return res
-        .status(201)
-        .json({ message: 'User created successfully', postData });
+
+      return ResponseHelper.sendCreated(res, postData);
     } else if (
       entityType === 'artist' &&
       dataValidation.artistValidation(data as Artist)
@@ -54,9 +54,8 @@ export default class CommonService {
       } as Artist;
 
       db['artist'].push(postData);
-      return res
-        .status(201)
-        .json({ message: 'Artist created successfully', postData });
+
+      return ResponseHelper.sendCreated(res, postData);
     } else if (
       entityType === 'track' &&
       dataValidation.trackValidation(data as Track)
@@ -66,9 +65,8 @@ export default class CommonService {
         ...data,
       } as Track;
       db['track'].push(postData);
-      return res
-        .status(201)
-        .json({ message: 'Track created successfully', postData });
+
+      return ResponseHelper.sendCreated(res, postData);
     } else if (
       entityType === 'album' &&
       dataValidation.albumValidation(data as Album)
@@ -78,9 +76,8 @@ export default class CommonService {
         ...data,
       } as Album;
       db['album'].push(postData);
-      return res
-        .status(201)
-        .json({ message: 'Album created successfully', postData });
+
+      return ResponseHelper.sendCreated(res, postData);
     }
   }
 }
