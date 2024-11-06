@@ -1,11 +1,11 @@
 import { Controller, Post, Body, Res } from '@nestjs/common';
 import { Album, Artist, Track, User } from 'src/data/types/dataTypes';
 import { Response } from 'express';
-import CommonService from 'src/services/commonServices';
+import getService from 'src/services/getService';
 
 @Controller()
 export default class UsePostController {
-  constructor(private readonly appService: CommonService) {}
+  constructor(private readonly appService: getService) {}
 
   @Post('user')
   postUser(@Body() body: User, @Res() res: Response) {

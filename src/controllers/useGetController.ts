@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import CommonService from 'src/services/commonServices';
+import getService from 'src/services/getService';
 import {
   User,
   Track,
@@ -10,7 +10,7 @@ import {
 
 @Controller()
 export default class UseGetController {
-  constructor(private readonly appService: CommonService) {}
+  constructor(private readonly appService: getService) {}
 
   @Get('user')
   getUsers(): User[] {

@@ -14,7 +14,7 @@ import dataValidation from 'src/validations/dataValidation';
 import ResponseHelper from 'src/helpers/responseHelper';
 
 @Injectable()
-export default class CommonService {
+export default class getService {
   getAll<T extends keyof DBTypes>(entityType: T): DBTypes[T] {
     return db[entityType];
   }
