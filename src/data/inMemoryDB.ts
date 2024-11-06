@@ -1,6 +1,6 @@
 import { DBTypes } from './types/dataTypes';
 
-const db: DBTypes = {
+const db: { [K in keyof DBTypes]: DBTypes[K] } = {
   user: [],
   track: [],
   artist: [],
