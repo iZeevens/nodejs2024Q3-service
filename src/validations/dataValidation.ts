@@ -5,27 +5,31 @@ import {
   Album,
   Favorites,
 } from 'src/data/types/dataTypes';
+import ResponseHelper from 'src/helpers/responseHelper';
+import { Response } from 'express';
 
-const validation = (data: unknown) =>
-  typeof data === 'object' && data !== null ? true : false;
+const validation = (data: unknown, res: Response) => {
+  ResponseHelper.sendBadRequest(res, 'Body isn`t object or data = null');
+
+  return typeof data === 'object' && data !== null ? true : false;
+};
 
 const dataValidation = {
-  userValidation: (data: CreateUserDto): data is CreateUserDto => {
-    // console.log('valid:', validation(data));
-    if (!validation(data)) return false;
+  userValidation: (
+    data: CreateUserDto,
+    res: Response,
+  ): data is CreateUserDto => {
+    if (!validation(data, res)) return false;
 
     const isValidLogin = 'login' in data && typeof data.login === 'string';
     const isValidPassword =
       'password' in data && typeof data.password === 'string';
 
-    // console.log(`isLogin ${isValidLogin}`);
-    // console.log(`isLogin ${isValidPassword}`);
-
     return isValidLogin && isValidPassword;
   },
 
-  artistValidation: (data: Artist): data is Artist => {
-    if (!validation(data)) return false;
+  artistValidation: (data: Artist, res: Response): data is Artist => {
+    if (!validation(data, res)) return false;
 
     const isValidName = 'name' in data && typeof data.name === 'string';
     const isValidGrammy =
@@ -34,8 +38,8 @@ const dataValidation = {
     return isValidName && isValidGrammy;
   },
 
-  trackValidation: (data: Track): data is Track => {
-    if (!validation(data)) return false;
+  trackValidation: (data: Track, res: Response): data is Track => {
+    if (!validation(data, res)) return false;
 
     const isValidName = 'name' in data && typeof data.name === 'string';
     const isValidArtistId =
@@ -50,8 +54,8 @@ const dataValidation = {
     return isValidName && isValidArtistId && isValidAlbumId && isValidDuration;
   },
 
-  albumValidation: (data: Album): data is Album => {
-    if (!validation(data)) return false;
+  albumValidation: (data: Album, res: Response): data is Album => {
+    if (!validation(data, res)) return false;
 
     const isValidName = 'name' in data && typeof data.name === 'string';
     const isValidYear = 'year' in data && typeof data.year === 'number';
@@ -62,7 +66,7 @@ const dataValidation = {
     return isValidName && isValidYear && isValidArtistId;
   },
 
-  favoriteValidation: (data: Favorites): data is Favorites => {
+  favoriteValidation: (data: Favorites, res: Response): data is Favorites => {
     if (
       typeof data !== 'object' ||
       !Array.isArray(data.artists) ||

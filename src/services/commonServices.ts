@@ -30,7 +30,7 @@ export default class CommonService {
 
     if (
       entityType === 'user' &&
-      dataValidation.userValidation(data as CreateUserDto)
+      dataValidation.userValidation(data as CreateUserDto, res)
     ) {
       const date = Date.now();
       const postData = {
@@ -46,7 +46,7 @@ export default class CommonService {
       return ResponseHelper.sendCreated(res, postData);
     } else if (
       entityType === 'artist' &&
-      dataValidation.artistValidation(data as Artist)
+      dataValidation.artistValidation(data as Artist, res)
     ) {
       const postData = {
         id: randomUUID(),
@@ -58,7 +58,7 @@ export default class CommonService {
       return ResponseHelper.sendCreated(res, postData);
     } else if (
       entityType === 'track' &&
-      dataValidation.trackValidation(data as Track)
+      dataValidation.trackValidation(data as Track, res)
     ) {
       const postData = {
         id: randomUUID(),
@@ -69,7 +69,7 @@ export default class CommonService {
       return ResponseHelper.sendCreated(res, postData);
     } else if (
       entityType === 'album' &&
-      dataValidation.albumValidation(data as Album)
+      dataValidation.albumValidation(data as Album, res)
     ) {
       const postData = {
         id: randomUUID(),
