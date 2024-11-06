@@ -8,9 +8,12 @@ import {
 import ResponseHelper from 'src/helpers/responseHelper';
 import { Response } from 'express';
 
-const isString = (value: unknown): boolean => typeof value === 'string';
-const isBoolean = (value: unknown): boolean => typeof value === 'boolean';
-const isNumber = (value: unknown): boolean => typeof value === 'number';
+const isCorrectString = (value: unknown): boolean => typeof value === 'string';
+const isCorrectBoolean = (value: unknown): boolean =>
+  typeof value === 'boolean';
+const isCorrectNumber = (value: unknown): boolean => typeof value === 'number';
+const isCorrectLength = (received: number, excepted: number): boolean =>
+  received === excepted;
 
 const sendError = (res: Response, message: string) => {
   ResponseHelper.sendBadRequest(res, message);
@@ -31,11 +34,16 @@ const dataValidation = {
   ): data is CreateUserDto => {
     if (!validateObject(data, res)) return false;
 
-    const isValidLogin = 'login' in data && isString(data.login);
-    const isValidPassword = 'password' in data && isString(data.password);
+    const isValidLogin = 'login' in data && isCorrectString(data.login);
+    const isValidPassword =
+      'password' in data && isCorrectString(data.password);
 
     if (!isValidLogin) sendError(res, 'Login isn`t valid');
     if (!isValidPassword) sendError(res, 'Password isn`t valid');
+    if (!isCorrectLength(Object.keys(data).length, 2)) {
+      sendError(res, 'Received more args than excepted');
+      return false;
+    }
 
     return isValidLogin && isValidPassword;
   },
@@ -43,11 +51,15 @@ const dataValidation = {
   artistValidation: (data: Artist, res: Response): data is Artist => {
     if (!!validateObject(data, res)) return false;
 
-    const isValidName = 'name' in data && isString(data.name);
-    const isValidGrammy = 'grammy' in data && isBoolean(data.grammy);
+    const isValidName = 'name' in data && isCorrectString(data.name);
+    const isValidGrammy = 'grammy' in data && isCorrectBoolean(data.grammy);
 
     if (!isValidName) sendError(res, 'Name isn`t valid');
     if (!isValidGrammy) sendError(res, 'Grammy isn`t valid');
+    if (!isCorrectLength(Object.keys(data).length, 2)) {
+      sendError(res, 'Received more args than excepted');
+      return false;
+    }
 
     return isValidName && isValidGrammy;
   },
@@ -55,17 +67,24 @@ const dataValidation = {
   trackValidation: (data: Track, res: Response): data is Track => {
     if (!!validateObject(data, res)) return false;
 
-    const isValidName = 'name' in data && isString(data.name);
+    const isValidName = 'name' in data && isCorrectString(data.name);
     const isValidArtistId =
-      'artistId' in data && (isString(data.artistId) || data.artistId === null);
+      'artistId' in data &&
+      (isCorrectString(data.artistId) || data.artistId === null);
     const isValidAlbumId =
-      'albumId' in data && (isString(data.artistId) || data.albumId === null);
-    const isValidDuration = 'duration' in data && isString(data.duration);
+      'albumId' in data &&
+      (isCorrectString(data.artistId) || data.albumId === null);
+    const isValidDuration =
+      'duration' in data && isCorrectString(data.duration);
 
     if (!isValidName) sendError(res, 'Name isn`t valid');
     if (!isValidArtistId) sendError(res, 'ArtistId isn`t valid');
     if (!isValidAlbumId) sendError(res, 'AlbumId isn`t valid');
     if (!isValidDuration) sendError(res, 'Duration isn`t valid');
+    if (!isCorrectLength(Object.keys(data).length, 4)) {
+      sendError(res, 'Received more args than excepted');
+      return false;
+    }
 
     return isValidName && isValidArtistId && isValidAlbumId && isValidDuration;
   },
@@ -73,14 +92,19 @@ const dataValidation = {
   albumValidation: (data: Album, res: Response): data is Album => {
     if (!validateObject(data, res)) return false;
 
-    const isValidName = 'name' in data && isString(data.name);
-    const isValidYear = 'year' in data && isNumber(data.year);
+    const isValidName = 'name' in data && isCorrectString(data.name);
+    const isValidYear = 'year' in data && isCorrectNumber(data.year);
     const isValidArtistId =
-      'artistId' in data && (isString(data.artistId) || data.artistId === null);
+      'artistId' in data &&
+      (isCorrectString(data.artistId) || data.artistId === null);
 
     if (!isValidName) sendError(res, 'Name isn`t valid');
     if (!isValidYear) sendError(res, 'Year isn`t valid');
     if (!isValidArtistId) sendError(res, 'ArtistId isn`t valid');
+    if (!isCorrectLength(Object.keys(data).length, 3)) {
+      sendError(res, 'Received more args than excepted');
+      return false;
+    }
 
     return isValidName && isValidYear && isValidArtistId;
   },
@@ -99,6 +123,10 @@ const dataValidation = {
       array.every((id) => typeof id === 'string');
 
     if (!isValidArray) ResponseHelper.sendBadRequest(res, 'Array isn`t valid');
+    if (!isCorrectLength(Object.keys(data).length, 3)) {
+      sendError(res, 'Received more args than excepted');
+      return false;
+    }
 
     if (
       !isValidArray(data.artists) ||
