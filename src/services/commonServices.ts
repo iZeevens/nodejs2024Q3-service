@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
-import db from 'src/data/inMemoryDB';
+import { Response } from 'express';
 import {
   CreateUserDto,
   DBTypes,
@@ -9,6 +9,7 @@ import {
   Artist,
   Album,
 } from 'src/data/types/dataTypes';
+import db from 'src/data/inMemoryDB';
 import dataValidation from 'src/validations/dataValidation';
 
 @Injectable()
@@ -17,7 +18,11 @@ export default class CommonService {
     return db[entityType];
   }
 
-  postCommon<T extends keyof DBTypes>(entityType: T, data: DBTypes[T][number]) {
+  postCommon<T extends keyof DBTypes>(
+    entityType: T,
+    data: DBTypes[T][number],
+    res: Response,
+  ) {
     if ('id' in data) {
       delete data.id;
     }
@@ -35,7 +40,10 @@ export default class CommonService {
         updatedAt: date,
       } as User;
 
-      return db['user'].push(postData as User);
+      db['user'].push(postData as User);
+      return res
+        .status(201)
+        .json({ message: 'User created successfully', postData });
     } else if (
       entityType === 'artist' &&
       dataValidation.artistValidation(data as Artist)
@@ -46,6 +54,9 @@ export default class CommonService {
       } as Artist;
 
       db['artist'].push(postData);
+      return res
+        .status(201)
+        .json({ message: 'Artist created successfully', postData });
     } else if (
       entityType === 'track' &&
       dataValidation.trackValidation(data as Track)
@@ -55,6 +66,9 @@ export default class CommonService {
         ...data,
       } as Track;
       db['track'].push(postData);
+      return res
+        .status(201)
+        .json({ message: 'Track created successfully', postData });
     } else if (
       entityType === 'album' &&
       dataValidation.albumValidation(data as Album)
@@ -64,6 +78,9 @@ export default class CommonService {
         ...data,
       } as Album;
       db['album'].push(postData);
+      return res
+        .status(201)
+        .json({ message: 'Album created successfully', postData });
     }
   }
 }
