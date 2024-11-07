@@ -48,4 +48,15 @@ export default class ArtistsService {
 
     return ResponseHelper.sendOk(res, artist);
   }
+
+  deleteArtist(id: string, res: Response) {
+    const artistIndex = this.artists.findIndex((artist) => artist.id === id);
+
+    if (artistIndex === -1) {
+      return ResponseHelper.sendNotFound(res, 'Artist not found');
+    }
+
+    this.artists.splice(artistIndex, 1);
+    return res.status(204).json({ message: 'Artist was deleted' });
+  }
 }

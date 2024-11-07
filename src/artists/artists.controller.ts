@@ -1,4 +1,13 @@
-import { Controller, Body, Post, Get, Res, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Post,
+  Get,
+  Res,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
@@ -34,5 +43,14 @@ export default class ArtistsController {
     @Res() res: Response,
   ) {
     return this.artistsService.updateArtist(id, body, res);
+  }
+
+  @Delete(':id')
+  deleteArtist(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.artistsService.deleteArtist(id, res);
   }
 }
