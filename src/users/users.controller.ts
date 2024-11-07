@@ -11,6 +11,7 @@ export default class UsersController {
     return this.usersService.getUsers(res);
   }
 
+  @Get(':id')
   findById(
     @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
     id: string,
