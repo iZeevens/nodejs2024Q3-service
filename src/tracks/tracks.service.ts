@@ -9,4 +9,16 @@ import db from 'src/data/inMemoryDB';
 @Injectable()
 export default class TracksService {
   private tracks: Track[] = db['track'];
+
+  findAll(res: Response) {
+    return ResponseHelper.sendOk(res, this.tracks);
+  }
+
+  findById(id: string, res: Response) {
+    const track = existById('track', id);
+
+    if (!track) {
+      return ResponseHelper.sendNotFound(res, 'Track not found');
+    }
+  }
 }
