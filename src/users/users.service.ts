@@ -9,9 +9,23 @@ import User from './interfaces/user.interface';
 
 @Injectable()
 export default class UsersService {
+  private users: User[] = db['user'];
+
+  private userWithoutPassword(user: User | User[]) {
+    const responseUser = Array.isArray(user) ? [...user] : { ...user };
+
+    if (Array.isArray(responseUser)) {
+      return responseUser.filter((user) => delete user.password);
+    } else {
+      delete responseUser.password;
+    }
+
+    return responseUser;
+  }
+
   getUsers(res: Response) {
-    const users = db['user'];
-    return ResponseHelper.sendOk(res, users);
+    const usersResponse = this.userWithoutPassword(this.users);
+    return ResponseHelper.sendOk(res, this.userWithoutPassword(usersResponse));
   }
 
   getUserById(id: string, res: Response) {
@@ -21,7 +35,7 @@ export default class UsersService {
       return ResponseHelper.sendNotFound(res, 'User not found');
     }
 
-    return ResponseHelper.sendOk(res, user);
+    return ResponseHelper.sendOk(res, this.userWithoutPassword(user));
   }
 
   createUser(body: CreateUserDto, res: Response) {
@@ -38,7 +52,8 @@ export default class UsersService {
     } as User;
 
     db['user'].push(user);
-    return ResponseHelper.sendCreated(res, user);
+
+    return ResponseHelper.sendCreated(res, this.userWithoutPassword(user));
   }
 
   updateUserPassword(id: string, body: UpdatePasswordDto, res: Response) {
@@ -55,21 +70,20 @@ export default class UsersService {
       user.version++;
       user.updatedAt = date;
 
-      return ResponseHelper.sendOk(res, user);
+      return ResponseHelper.sendOk(res, this.userWithoutPassword(user));
     } else {
-      return res.status(203).json({ message: 'Old password doesn`t match' });
+      return res.status(403).json({ message: 'Old password doesn`t match' });
     }
   }
 
   deleteUser(id: string, res: Response) {
-    const users = db['user'];
-    const userIndex = users.findIndex((user) => user.id === id);
+    const userIndex = this.users.findIndex((user) => user.id === id);
 
     if (userIndex === -1) {
       return ResponseHelper.sendNotFound(res, 'User not found');
     }
 
-    users.splice(userIndex, 1);
+    this.users.splice(userIndex, 1);
     return res.status(204).json({ message: 'User was deleted' });
   }
 }
