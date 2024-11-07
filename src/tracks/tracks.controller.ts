@@ -8,8 +8,8 @@ import {
   Post,
   Put,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
-import { ParseUUIDPipe } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
 
