@@ -31,7 +31,7 @@ export default class ArtistsService {
     const data = { id: randomUUID(), name, grammy };
 
     this.artists.push(data);
-    return ResponseHelper.sendOk(res, data);
+    return res.status(201).json(data);
   }
 
   updateArtist(id: string, body: UpdateArtistDto, res: Response) {
@@ -44,7 +44,7 @@ export default class ArtistsService {
     const { name, grammy } = body;
 
     if (name) artist.name = name;
-    if (grammy) artist.grammy = grammy;
+    if (grammy !== null || grammy !== undefined) artist.grammy = grammy;
 
     return ResponseHelper.sendOk(res, artist);
   }
