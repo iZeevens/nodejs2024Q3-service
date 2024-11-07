@@ -1,12 +1,4 @@
-interface User {
-  id: string; // uuid v4
-  login: string;
-  password: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
-}
-
+import { User } from 'src/users/interfaces/user.interface';
 interface Artist {
   id: string; // uuid v4
   name: string;
@@ -33,12 +25,6 @@ interface Favorites {
   albums: string[]; // favorite albums ids
   tracks: string[]; // favorite tracks ids
 }
-
-interface CreateUserDto {
-  login: string;
-  password: string;
-}
-
 interface DBTypes {
   user: User[];
   track: Track[];
@@ -47,4 +33,4 @@ interface DBTypes {
   favs: Favorites[];
 }
 
-export { User, CreateUserDto, Artist, Track, Album, Favorites, DBTypes };
+export { Artist, Track, Album, Favorites, DBTypes };
