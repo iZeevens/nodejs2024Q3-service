@@ -13,4 +13,14 @@ export default class FavoritesService {
   getFavorites(res: Response) {
     return ResponseHelper.sendOk(res, this.favorites);
   }
+
+  getFavoritesById(id: string, res: Response) {
+    const favs = existById('favs', id);
+
+    if (!favs) {
+      return ResponseHelper.sendNotFound(res, 'Favs not found');
+    }
+
+    return ResponseHelper.sendOk(res, favs);
+  }
 }
