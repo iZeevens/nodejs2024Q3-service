@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { DBTypes, User, Track, Artist, Album } from 'src/data/types/dataTypes';
 import db from 'src/data/inMemoryDB';
-import dataValidation from 'src/validations/dataValidation';
+import dataValidation from 'src/helpers/validations/dataValidation';
 import ResponseHelper from 'src/helpers/responseHelper';
 
 @Injectable()
