@@ -1,9 +1,5 @@
-import User from 'src/users/interfaces/user.interface';
-interface Artist {
-  id: string; // uuid v4
-  name: string;
-  grammy: boolean;
-}
+import { User } from 'src/users/interfaces/user.interface';
+import { Artist } from 'src/artists/interfaces/artists.interfaces';
 
 interface Track {
   id: string; // uuid v4

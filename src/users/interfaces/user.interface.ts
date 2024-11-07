@@ -7,4 +7,4 @@ interface User {
   updatedAt: number; // timestamp of last update
 }
 
-export default User;
+export { User };
