@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import ResponseHelper from 'src/helpers/responseHelper';
-import db from 'src/data/inMemoryDB';
-import { CreateUserDto } from './dto/user.dto';
 import { Response } from 'express';
+import { randomUUID } from 'crypto';
+import { CreateUserDto } from './dto/user.dto';
+import db from 'src/data/inMemoryDB';
+import ResponseHelper from 'src/helpers/responseHelper';
+import User from './interfaces/user.interface';
 
 @Injectable()
 export default class UsersService {
@@ -24,5 +26,18 @@ export default class UsersService {
 
   createUser(body: CreateUserDto, res: Response) {
     const { login, password } = body;
+
+    const date = Date.now();
+    const user = {
+      id: randomUUID(),
+      login,
+      password,
+      version: 1,
+      createdAt: date,
+      updatedAt: date,
+    } as User;
+
+    db['user'].push(user);
+    return ResponseHelper.sendCreated(res, user);
   }
 }
