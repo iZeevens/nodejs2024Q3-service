@@ -1,4 +1,13 @@
-import { Controller, Body, Param, Res, Get, Post, Put } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Param,
+  Res,
+  Get,
+  Post,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
@@ -34,5 +43,14 @@ export default class TracksController {
     @Res() res: Response,
   ) {
     return this.TracksService.updateTrack(id, body, res);
+  }
+
+  @Delete(':id')
+  deleteTrack(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.TracksService.deleteTrack(id, res);
   }
 }

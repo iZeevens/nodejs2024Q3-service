@@ -21,13 +21,13 @@ class UpdateTrackDto {
   @IsOptional()
   name: string;
 
-  @IsString()
   @ValidateIf((_, value) => value !== null)
+  @IsString()
   @IsOptional()
   artistId: string | null;
 
-  @IsString()
   @ValidateIf((_, value) => value !== null)
+  @IsString()
   @IsOptional()
   albumId: string | null;
 

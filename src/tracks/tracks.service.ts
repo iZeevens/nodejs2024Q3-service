@@ -41,10 +41,21 @@ export default class TracksService {
     const { name, artistId, albumId, duration } = body;
 
     if (name) track.name = name;
-    if (artistId) track.artistId = artistId;
-    if (albumId) track.albumId = albumId;
+    if (artistId !== undefined) track.artistId = artistId;
+    if (albumId !== undefined) track.albumId = albumId;
     if (duration) track.duration = duration;
 
     return ResponseHelper.sendOk(res, track);
+  }
+
+  deleteTrack(id: string, res: Response) {
+    const track = this.tracks.findIndex((track) => track.id === id);
+
+    if (track === -1) {
+      return ResponseHelper.sendNotFound(res, 'Track not found');
+    }
+
+    this.tracks.splice(track, 1);
+    return res.status(204).json({ message: 'Track was deleted' });
   }
 }
