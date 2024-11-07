@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Artist } from './interfaces/artists.interfaces';
+import { Artist } from './interfaces/artist.interfaces';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
 import { randomUUID } from 'crypto';

@@ -9,7 +9,7 @@ import {
   Put,
   Res,
 } from '@nestjs/common';
-import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
+import { CreateUserDto, UpdatePasswordDto } from './dto/users.dto';
 import { Response } from 'express';
 import UsersService from './users.service';
 

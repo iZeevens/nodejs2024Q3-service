@@ -1,13 +1,6 @@
 import { User } from 'src/users/interfaces/user.interface';
-import { Artist } from 'src/artists/interfaces/artists.interfaces';
-
-interface Track {
-  id: string; // uuid v4
-  name: string;
-  artistId: string | null; // refers to Artist
-  albumId: string | null; // refers to Album
-  duration: number; // integer number
-}
+import { Artist } from 'src/artists/interfaces/artist.interfaces';
+import { Track } from 'src/tracks/dto/tracks.dto';
 
 interface Album {
   id: string; // uuid v4
