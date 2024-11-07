@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { CreateAlbum } from './dto/albums.dto';
 import AlbumsService from './albums.service';
 
-@Controller()
+@Controller('album')
 export default class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 

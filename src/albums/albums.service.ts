@@ -16,7 +16,7 @@ export default class AlbumsService {
   }
 
   findById(id: string, res: Response) {
-    const album = existById('artist', id);
+    const album = existById('album', id);
 
     if (!album) {
       return ResponseHelper.sendNotFound(res, 'Album not found');
@@ -35,7 +35,7 @@ export default class AlbumsService {
   }
 
   updateAlbum(id: string, body: UpdateAlbum, res: Response) {
-    const album = existById('artist', id) as Album;
+    const album = existById('album', id) as Album;
 
     if (!album) {
       return ResponseHelper.sendNotFound(res, 'Album not found');
@@ -53,7 +53,7 @@ export default class AlbumsService {
   deleteAlbum(id: string, res: Response) {
     const album = this.albums.findIndex((album) => album.id === id);
 
-    if (album !== 1) {
+    if (album === -1) {
       return ResponseHelper.sendNotFound(res, 'Album not found');
     }
 
