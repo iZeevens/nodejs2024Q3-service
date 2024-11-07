@@ -29,7 +29,7 @@ export default class UsersService {
   }
 
   getUserById(id: string, res: Response) {
-    const user = existById('user', id);
+    const user = existById('user', id) as User;
 
     if (!user) {
       return ResponseHelper.sendNotFound(res, 'User not found');
@@ -58,7 +58,7 @@ export default class UsersService {
 
   updateUserPassword(id: string, body: UpdatePasswordDto, res: Response) {
     const { oldPassword, newPassword } = body;
-    const user = existById('user', id);
+    const user = existById('user', id) as User;
 
     if (!user) {
       return ResponseHelper.sendNotFound(res, 'User not found');
