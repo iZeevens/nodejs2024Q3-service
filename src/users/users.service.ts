@@ -60,4 +60,16 @@ export default class UsersService {
       return res.status(203).json({ message: 'Old password doesn`t match' });
     }
   }
+
+  deleteUser(id: string, res: Response) {
+    const users = db['user'];
+    const userIndex = users.findIndex((user) => user.id === id);
+
+    if (userIndex === -1) {
+      return ResponseHelper.sendNotFound(res, 'User not found');
+    }
+
+    users.splice(userIndex, 1);
+    return res.status(204).json({ message: 'User was deleted' });
+  }
 }

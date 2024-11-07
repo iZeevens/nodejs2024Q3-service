@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -44,5 +45,14 @@ export default class UsersController {
     @Res() res: Response,
   ) {
     return this.usersService.updateUserPassword(id, body, res);
+  }
+
+  @Delete(':id')
+  deleteUser(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.usersService.deleteUser(id, res);
   }
 }
