@@ -1,3 +1,4 @@
+import TracksService from './tracks.service';
 import {
   Controller,
   Body,
@@ -14,11 +15,11 @@ import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
 
 @Controller('track')
 export default class TracksController {
-  constructor(private readonly TracksService: TracksController) {}
+  constructor(private readonly tracksService: TracksService) {}
 
   @Get()
   findAll(@Res() res: Response) {
-    return this.TracksService.findAll(res);
+    return this.tracksService.findAll(res);
   }
 
   @Get(':id')
@@ -27,22 +28,22 @@ export default class TracksController {
     id: string,
     @Res() res: Response,
   ) {
-    return this.TracksService.findById(id, res);
+    return this.tracksService.findById(id, res);
   }
 
   @Post()
   createTrack(@Body() body: CreateTrackDto, @Res() res: Response) {
-    return this.TracksService.createTrack(body, res);
+    return this.tracksService.createTrack(body, res);
   }
 
-  @Put()
+  @Put(':id')
   updateTrack(
     @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
     id: string,
     @Body() body: UpdateTrackDto,
     @Res() res: Response,
   ) {
-    return this.TracksService.updateTrack(id, body, res);
+    return this.tracksService.updateTrack(id, body, res);
   }
 
   @Delete(':id')
@@ -51,6 +52,6 @@ export default class TracksController {
     id: string,
     @Res() res: Response,
   ) {
-    return this.TracksService.deleteTrack(id, res);
+    return this.tracksService.deleteTrack(id, res);
   }
 }

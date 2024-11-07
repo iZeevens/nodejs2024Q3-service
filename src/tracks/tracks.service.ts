@@ -21,6 +21,8 @@ export default class TracksService {
     if (!track) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
     }
+
+    return ResponseHelper.sendOk(res, track);
   }
 
   createTrack(body: CreateTrackDto, res: Response) {
