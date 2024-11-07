@@ -5,7 +5,7 @@ import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
 import db from 'src/data/inMemoryDB';
 import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
-import User from './interfaces/user.interface';
+import { User } from './interfaces/user.interface';
 
 @Injectable()
 export default class UsersService {
