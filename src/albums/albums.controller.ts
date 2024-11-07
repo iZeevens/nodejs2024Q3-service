@@ -6,6 +6,8 @@ import {
   Param,
   Post,
   Body,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateAlbum } from './dto/albums.dto';
@@ -32,5 +34,24 @@ export default class AlbumsController {
   @Post()
   createAlbum(@Body() body: CreateAlbum, @Res() res: Response) {
     return this.albumsService.createAlbum(body, res);
+  }
+
+  @Put(':id')
+  updateAlbum(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Body() body: CreateAlbum,
+    @Res() res: Response,
+  ) {
+    return this.albumsService.updateAlbum(id, body, res);
+  }
+
+  @Delete(':id')
+  deleteAlbum(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.albumsService.deleteAlbum(id, res);
   }
 }
