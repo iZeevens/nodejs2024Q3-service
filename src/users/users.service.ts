@@ -51,7 +51,7 @@ export default class UsersService {
       updatedAt: date,
     } as User;
 
-    db['user'].push(user);
+    this.users.push(user);
 
     return ResponseHelper.sendCreated(res, this.userWithoutPassword(user));
   }
