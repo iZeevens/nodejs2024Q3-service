@@ -1,14 +1,7 @@
 import { User } from 'src/users/interfaces/user.interface';
 import { Artist } from 'src/artists/interfaces/artist.interfaces';
 import { Track } from 'src/tracks/interfaces/track.interface';
-
-interface Album {
-  id: string; // uuid v4
-  name: string;
-  year: number;
-  artistId: string | null; // refers to Artist
-}
-
+import { Album } from 'src/albums/interfaces/album.interface';
 interface Favorites {
   artists: string[]; // favorite artists ids
   albums: string[]; // favorite albums ids
