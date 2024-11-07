@@ -5,9 +5,10 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   Res,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
 import { Response } from 'express';
 import UsersService from './users.service';
 
@@ -33,5 +34,15 @@ export default class UsersController {
   @Post()
   createUser(@Body() body: CreateUserDto, @Res() res: Response) {
     return this.usersService.createUser(body, res);
+  }
+
+  @Put(':id')
+  updateUserPassword(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Body() body: UpdatePasswordDto,
+    @Res() res: Response,
+  ) {
+    return this.usersService.updateUserPassword(id, body, res);
   }
 }

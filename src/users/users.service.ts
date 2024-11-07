@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdatePasswordDto } from './dto/user.dto';
 import db from 'src/data/inMemoryDB';
+import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
 import User from './interfaces/user.interface';
 
@@ -10,13 +11,12 @@ import User from './interfaces/user.interface';
 export default class UsersService {
   getUsers(res: Response) {
     const users = db['user'];
-    ResponseHelper.sendOk(res, users);
-
-    return users;
+    return ResponseHelper.sendOk(res, users);
   }
 
   getUserById(id: string, res: Response) {
-    const user = db.user.find((user) => user.id === id);
+    const user = existById('user', id);
+
     if (!user) {
       return ResponseHelper.sendNotFound(res, 'User not found');
     }
@@ -39,5 +39,25 @@ export default class UsersService {
 
     db['user'].push(user);
     return ResponseHelper.sendCreated(res, user);
+  }
+
+  updateUserPassword(id: string, body: UpdatePasswordDto, res: Response) {
+    const { oldPassword, newPassword } = body;
+    const user = existById('user', id);
+
+    if (!user) {
+      return ResponseHelper.sendNotFound(res, 'User not found');
+    }
+
+    if (user.password === oldPassword) {
+      const date = Date.now();
+      user.password = newPassword;
+      user.version++;
+      user.updatedAt = date;
+
+      return ResponseHelper.sendOk(res, user);
+    } else {
+      return res.status(203).json({ message: 'Old password doesn`t match' });
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { IsString, MinLength } from 'class-validator';
 
-export class CreateUserDto {
+class CreateUserDto {
   @IsString()
   login: string;
 
@@ -8,3 +8,13 @@ export class CreateUserDto {
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   password: string;
 }
+
+class UpdatePasswordDto {
+  @IsString()
+  oldPassword: string;
+
+  @IsString()
+  newPassword: string;
+}
+
+export { CreateUserDto, UpdatePasswordDto };
