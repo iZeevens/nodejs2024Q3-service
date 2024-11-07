@@ -1,6 +1,6 @@
 import { User } from 'src/users/interfaces/user.interface';
 import { Artist } from 'src/artists/interfaces/artist.interfaces';
-import { Track } from 'src/tracks/dto/tracks.dto';
+import { Track } from 'src/tracks/interfaces/track.interface';
 
 interface Album {
   id: string; // uuid v4

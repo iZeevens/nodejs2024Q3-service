@@ -1,9 +1,19 @@
-interface Track {
-  id: string; // uuid v4
+import { IsNumber, IsString, ValidateIf } from 'class-validator';
+
+class CreateTrackDto {
+  @IsString()
   name: string;
-  artistId: string | null; // refers to Artist
-  albumId: string | null; // refers to Album
-  duration: number; // integer number
+
+  @IsString()
+  @ValidateIf((_, value) => value !== null)
+  artistId: string | null;
+
+  @IsString()
+  @ValidateIf((_, value) => value !== null)
+  albumId: string | null;
+
+  @IsNumber()
+  duration: number;
 }
 
-export { Track };
+export { CreateTrackDto };
