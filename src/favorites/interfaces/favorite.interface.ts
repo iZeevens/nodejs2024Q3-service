@@ -1,7 +1,7 @@
 interface Favorites {
-  artists: string[]; // favorite artists ids
-  albums: string[]; // favorite albums ids
-  tracks: string[]; // favorite tracks ids
+  artists: { id: string }[]; // favorite artists ids
+  albums: { id: string }[]; // favorite albums ids
+  tracks: { id: string }[]; // favorite tracks ids
 }
 
 export { Favorites };

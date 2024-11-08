@@ -20,7 +20,7 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    this.favorites[type + 's'].push(isExist);
+    this.favorites[`${type}s`].push(isExist);
     return res.status(201).json(isExist);
   }
 
@@ -29,13 +29,15 @@ export default class FavoritesService {
     type: 'track' | 'artist' | 'album',
     res: Response,
   ) {
-    const isExist = db[type].findIndex((item) => item.id === id);
+    const isExist = this.favorites[`${type}s`].findIndex(
+      (item) => item.id === id,
+    );
 
     if (isExist === -1) {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    delete this.favorites[type + 's'][isExist];
-    return res.status(204).json(isExist);
+    this.favorites[`${type}s`].splice(isExist, 1);
+    return res.status(204).json(undefined);
   }
 }
