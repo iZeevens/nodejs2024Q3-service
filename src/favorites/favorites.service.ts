@@ -20,7 +20,7 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    this.favorites[type + 's'].push(id);
+    this.favorites[type + 's'].push(isExist);
     return res.status(201).json(isExist);
   }
 
