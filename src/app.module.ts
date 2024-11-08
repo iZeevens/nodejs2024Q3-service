@@ -7,6 +7,8 @@ import TracksController from './tracks/tracks.controller';
 import TracksService from './tracks/tracks.service';
 import AlbumsController from './albums/albums.controller';
 import AlbumsService from './albums/albums.service';
+import FavoritesController from './favorites/favorites.controller';
+import FavoritesService from './favorites/favorites.service';
 
 @Module({
   imports: [],
@@ -15,7 +17,14 @@ import AlbumsService from './albums/albums.service';
     ArtistsController,
     TracksController,
     AlbumsController,
+    FavoritesController,
   ],
-  providers: [UsersService, ArtistsService, TracksService, AlbumsService],
+  providers: [
+    UsersService,
+    ArtistsService,
+    TracksService,
+    AlbumsService,
+    FavoritesService,
+  ],
 })
 export class AppModule {}
