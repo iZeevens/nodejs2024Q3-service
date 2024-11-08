@@ -1,5 +1,4 @@
-import db from 'src/data/inMemoryDB';
-import { DBTypes } from 'src/data/types/dataTypes';
+import { db, DBTypes } from 'src/data/inMemoryDB';
 
 const existById = (type: keyof DBTypes, id: string) => {
   if (type !== 'favs') {

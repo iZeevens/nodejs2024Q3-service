@@ -19,4 +19,4 @@ const db: { [K in keyof DBTypes]: DBTypes[K] } = {
   favs: { artists: [], albums: [], tracks: [] },
 };
 
-export default db;
+export { db, DBTypes };

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
 import { CreateUserDto, UpdatePasswordDto } from './dto/users.dto';
-import db from 'src/data/inMemoryDB';
+import { db } from 'src/data/inMemoryDB';
 import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
 import { User } from './interfaces/user.interface';

@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
 import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
-import db from 'src/data/inMemoryDB';
+import { db } from 'src/data/inMemoryDB';
 
 @Injectable()
 export default class FavoritesService {
