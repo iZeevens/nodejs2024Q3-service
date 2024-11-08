@@ -1,6 +1,5 @@
 import { Favorites } from './interfaces/favorite.interface';
 import { Response } from 'express';
-import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
@@ -8,19 +7,35 @@ import db from 'src/data/inMemoryDB';
 
 @Injectable()
 export default class FavoritesService {
-  private favorites: Favorites[] = db['favs'];
+  private favorites: Favorites = db['favs'];
 
   getFavorites(res: Response) {
     return ResponseHelper.sendOk(res, this.favorites);
   }
 
-  getFavoritesById(id: string, res: Response) {
-    const favs = existById('favs', id);
+  addToFavs(id: string, type: 'track' | 'artist' | 'album', res: Response) {
+    const isExist = existById(type, id);
 
-    if (!favs) {
-      return ResponseHelper.sendNotFound(res, 'Favs not found');
+    if (!isExist) {
+      return res.status(422).json({ message: `${type} not found` });
     }
 
-    return ResponseHelper.sendOk(res, favs);
+    this.favorites[type].push(id);
+    return res.status(201).json(isExist);
+  }
+
+  deleteFromFavs(
+    id: string,
+    type: 'track' | 'artist' | 'album',
+    res: Response,
+  ) {
+    const isExist = db[type].findIndex((item) => item.id === id);
+
+    if (isExist === -1) {
+      return res.status(422).json({ message: `${type} not found` });
+    }
+
+    delete this.favorites[type][isExist];
+    return res.status(204).json(isExist);
   }
 }

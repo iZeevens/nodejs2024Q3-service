@@ -1,10 +1,8 @@
 import {
-  Body,
   Param,
   Res,
   Get,
   Post,
-  Put,
   Delete,
   ParseUUIDPipe,
   Controller,
@@ -21,12 +19,57 @@ export default class FavoritesController {
     return this.favoritesService.getFavorites(res);
   }
 
-  @Get(':id')
-  findById(
+  @Post(':id')
+  trackToFavs(
     @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
     id: string,
     @Res() res: Response,
   ) {
-    return this.favoritesService.getFavoritesById(id, res);
+    return this.favoritesService.addToFavs(id, 'track', res);
+  }
+
+  @Post(':id')
+  albumToFavs(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.favoritesService.addToFavs(id, 'album', res);
+  }
+
+  @Post(':id')
+  artistToFavs(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.favoritesService.addToFavs(id, 'artist', res);
+  }
+
+  @Delete(':id')
+  deleteTrackFromFavs(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.favoritesService.deleteFromFavs(id, 'track', res);
+  }
+
+  @Delete(':id')
+  deleteAlbumFromFavs(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.favoritesService.deleteFromFavs(id, 'album', res);
+  }
+
+  @Delete(':id')
+  deleteArtistFromFavs(
+    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+    id: string,
+    @Res() res: Response,
+  ) {
+    return this.favoritesService.deleteFromFavs(id, 'artist', res);
   }
 }

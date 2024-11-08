@@ -8,7 +8,7 @@ interface DBTypes {
   track: Track[];
   artist: Artist[];
   album: Album[];
-  favs: Favorites[];
+  favs: Favorites;
 }
 
 const db: { [K in keyof DBTypes]: DBTypes[K] } = {
@@ -16,7 +16,7 @@ const db: { [K in keyof DBTypes]: DBTypes[K] } = {
   track: [],
   artist: [],
   album: [],
-  favs: [],
+  favs: { artists: [], albums: [], tracks: [] },
 };
 
 export default db;
