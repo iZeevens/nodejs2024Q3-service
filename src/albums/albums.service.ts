@@ -6,10 +6,12 @@ import { randomUUID } from 'crypto';
 import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
 import { db } from 'src/data/inMemoryDB';
+import { Track } from 'src/tracks/interfaces/track.interface';
 
 @Injectable()
 export default class AlbumsService {
   private albums: Album[] = db['album'];
+  private tracks: Track[] = db['track'];
 
   findAll(res: Response) {
     return ResponseHelper.sendOk(res, this.albums);
@@ -56,6 +58,12 @@ export default class AlbumsService {
     if (album === -1) {
       return ResponseHelper.sendNotFound(res, 'Album not found');
     }
+
+    this.tracks.forEach((track) => {
+      if (track.albumId === id) {
+        track.albumId = null;
+      }
+    });
 
     this.albums.splice(album, 1);
     return res.status(204).json({ message: 'Album was deleted' });
