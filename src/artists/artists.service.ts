@@ -8,12 +8,14 @@ import ResponseHelper from 'src/helpers/responseHelper';
 import { db } from 'src/data/inMemoryDB';
 import { Track } from 'src/tracks/interfaces/track.interface';
 import { Album } from 'src/albums/interfaces/album.interface';
+import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 
 @Injectable()
 export default class ArtistsService {
   private artists: Artist[] = db['artist'];
   private tracks: Track[] = db['track'];
   private albums: Album[] = db['album'];
+  private favs: Favorites = db['favs'];
 
   getArtists(res: Response) {
     return ResponseHelper.sendOk(res, this.artists);
@@ -62,9 +64,13 @@ export default class ArtistsService {
 
     const trackArtistId = this.tracks.find((track) => track.artistId === id);
     const albumArtistId = this.albums.find((album) => album.artistId === id);
+    const favoriteArtistId = this.favs.artists.findIndex(
+      (artist) => artist.id === id,
+    );
 
     if (trackArtistId) trackArtistId.artistId = null;
     if (albumArtistId) albumArtistId.artistId = null;
+    if (favoriteArtistId === -1) this.favs.artists.splice(favoriteArtistId, 1);
 
     this.artists.splice(artistIndex, 1);
     return res.status(204).json({ message: 'Artist was deleted' });

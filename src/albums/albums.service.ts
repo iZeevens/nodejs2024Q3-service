@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Album } from './interfaces/album.interface';
+import { Track } from 'src/tracks/interfaces/track.interface';
+import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 import { CreateAlbum, UpdateAlbum } from './dto/albums.dto';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
 import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
 import { db } from 'src/data/inMemoryDB';
-import { Track } from 'src/tracks/interfaces/track.interface';
 
 @Injectable()
 export default class AlbumsService {
   private albums: Album[] = db['album'];
   private tracks: Track[] = db['track'];
+  private favs: Favorites = db['favs'];
 
   findAll(res: Response) {
     return ResponseHelper.sendOk(res, this.albums);
@@ -64,6 +66,11 @@ export default class AlbumsService {
         track.albumId = null;
       }
     });
+    const favoriteAlbumId = this.favs.albums.findIndex(
+      (album) => album.id === id,
+    );
+
+    if (favoriteAlbumId === -1) this.favs.albums.splice(favoriteAlbumId, 1);
 
     this.albums.splice(album, 1);
     return res.status(204).json({ message: 'Album was deleted' });

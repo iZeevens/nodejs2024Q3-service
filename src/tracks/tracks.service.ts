@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Track } from './interfaces/track.interface';
+import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
@@ -10,6 +11,7 @@ import { db } from 'src/data/inMemoryDB';
 @Injectable()
 export default class TracksService {
   private tracks: Track[] = db['track'];
+  private favs: Favorites = db['favs'];
 
   findAll(res: Response) {
     return ResponseHelper.sendOk(res, this.tracks);
@@ -56,6 +58,12 @@ export default class TracksService {
     if (track === -1) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
     }
+
+    const favoriteTrackId = this.favs.tracks.findIndex(
+      (track) => track.id === id,
+    );
+
+    if (favoriteTrackId === -1) this.favs.tracks.splice(favoriteTrackId, 1);
 
     this.tracks.splice(track, 1);
     return res.status(204).json({ message: 'Track was deleted' });
