@@ -20,7 +20,7 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    this.favorites[type].push(id);
+    this.favorites[type + 's'].push(id);
     return res.status(201).json(isExist);
   }
 
@@ -35,7 +35,7 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    delete this.favorites[type][isExist];
+    delete this.favorites[type + 's'][isExist];
     return res.status(204).json(isExist);
   }
 }
