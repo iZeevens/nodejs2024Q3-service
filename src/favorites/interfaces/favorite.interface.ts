@@ -1,7 +1,17 @@
+import { Artist } from 'src/artists/interfaces/artist.interfaces';
+import { Album } from 'src/albums/interfaces/album.interface';
+import { Track } from 'src/tracks/interfaces/track.interface';
+
 interface Favorites {
-  artists: { id: string }[]; // favorite artists ids
-  albums: { id: string }[]; // favorite albums ids
-  tracks: { id: string }[]; // favorite tracks ids
+  artists: string[]; // favorite artists ids
+  albums: string[]; // favorite albums ids
+  tracks: string[]; // favorite tracks ids
 }
 
-export { Favorites };
+interface FavoritesResponse {
+  artists: Artist[];
+  albums: Album[];
+  tracks: Track[];
+}
+
+export { Favorites, FavoritesResponse };

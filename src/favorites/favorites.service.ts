@@ -1,4 +1,4 @@
-import { Favorites } from './interfaces/favorite.interface';
+import { Favorites, FavoritesResponse } from './interfaces/favorite.interface';
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
 import existById from 'src/helpers/checkExist';
@@ -10,7 +10,20 @@ export default class FavoritesService {
   private favorites: Favorites = db['favs'];
 
   getFavorites(res: Response) {
-    return ResponseHelper.sendOk(res, this.favorites);
+    const result = {
+      artists: this.favorites.artists.map(
+        (artistId) =>
+          db['artist'].find((artist) => artist.id === artistId) || null,
+      ),
+      albums: this.favorites.albums.map(
+        (albumId) => db['album'].find((album) => album.id === albumId) || null,
+      ),
+      tracks: this.favorites.tracks.map(
+        (trackId) => db['track'].find((track) => track.id === trackId) || null,
+      ),
+    } as FavoritesResponse;
+
+    return ResponseHelper.sendOk(res, result);
   }
 
   addToFavs(id: string, type: 'track' | 'artist' | 'album', res: Response) {
@@ -20,7 +33,7 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    this.favorites[`${type}s`].push(isExist);
+    this.favorites[`${type}s`].push(id);
     return res.status(201).json(isExist);
   }
 
@@ -30,7 +43,7 @@ export default class FavoritesService {
     res: Response,
   ) {
     const isExist = this.favorites[`${type}s`].findIndex(
-      (item) => item.id === id,
+      (itemId) => itemId === id,
     );
 
     if (isExist === -1) {

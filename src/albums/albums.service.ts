@@ -66,7 +66,7 @@ export default class AlbumsService {
         track.albumId = null;
       }
     });
-    this.favs.albums = this.favs.albums.filter((album) => album.id !== id);
+    this.favs.albums = this.favs.albums.filter((albumId) => albumId !== id);
 
     this.albums.splice(album, 1);
     return res.status(204).json({ message: 'Album was deleted' });

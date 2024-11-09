@@ -64,7 +64,7 @@ export default class ArtistsService {
 
     const trackArtistId = this.tracks.find((track) => track.artistId === id);
     const albumArtistId = this.albums.find((album) => album.artistId === id);
-    this.favs.artists = this.favs.artists.filter((artist) => artist.id !== id);
+    this.favs.artists = this.favs.artists.filter((artistId) => artistId !== id);
 
     if (trackArtistId) trackArtistId.artistId = null;
     if (albumArtistId) albumArtistId.artistId = null;
