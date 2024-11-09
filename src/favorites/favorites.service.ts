@@ -1,4 +1,7 @@
 import { Favorites, FavoritesResponse } from './interfaces/favorite.interface';
+import { Artist } from 'src/artists/interfaces/artist.interfaces';
+import { Track } from 'src/tracks/interfaces/track.interface';
+import { Album } from 'src/albums/interfaces/album.interface';
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
 import existById from 'src/helpers/checkExist';
@@ -9,18 +12,19 @@ import { db } from 'src/data/inMemoryDB';
 export default class FavoritesService {
   private favorites: Favorites = db['favs'];
 
+  private helperFindResult(type: 'artist' | 'album' | 'track') {
+    return this.favorites[`${type}s`].map((itemId) =>
+      (db[type] as (Artist | Track | Album)[]).find(
+        (item) => item.id === itemId,
+      ),
+    );
+  }
+
   getFavorites(res: Response) {
     const result = {
-      artists: this.favorites.artists.map(
-        (artistId) =>
-          db['artist'].find((artist) => artist.id === artistId) || null,
-      ),
-      albums: this.favorites.albums.map(
-        (albumId) => db['album'].find((album) => album.id === albumId) || null,
-      ),
-      tracks: this.favorites.tracks.map(
-        (trackId) => db['track'].find((track) => track.id === trackId) || null,
-      ),
+      artists: this.helperFindResult('artist'),
+      albums: this.helperFindResult('album'),
+      tracks: this.helperFindResult('track'),
     } as FavoritesResponse;
 
     return ResponseHelper.sendOk(res, result);
