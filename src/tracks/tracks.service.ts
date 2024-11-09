@@ -58,12 +58,7 @@ export default class TracksService {
     if (track === -1) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
     }
-
-    const favoriteTrackId = this.favs.tracks.findIndex(
-      (track) => track.id === id,
-    );
-
-    if (favoriteTrackId === -1) this.favs.tracks.splice(favoriteTrackId, 1);
+    this.favs.tracks = this.favs.tracks.filter((track) => track.id !== id);
 
     this.tracks.splice(track, 1);
     return res.status(204).json({ message: 'Track was deleted' });

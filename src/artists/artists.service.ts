@@ -64,13 +64,10 @@ export default class ArtistsService {
 
     const trackArtistId = this.tracks.find((track) => track.artistId === id);
     const albumArtistId = this.albums.find((album) => album.artistId === id);
-    const favoriteArtistId = this.favs.artists.findIndex(
-      (artist) => artist.id === id,
-    );
+    this.favs.artists = this.favs.artists.filter((artist) => artist.id !== id);
 
     if (trackArtistId) trackArtistId.artistId = null;
     if (albumArtistId) albumArtistId.artistId = null;
-    if (favoriteArtistId === -1) this.favs.artists.splice(favoriteArtistId, 1);
 
     this.artists.splice(artistIndex, 1);
     return res.status(204).json({ message: 'Artist was deleted' });

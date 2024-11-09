@@ -66,11 +66,7 @@ export default class AlbumsService {
         track.albumId = null;
       }
     });
-    const favoriteAlbumId = this.favs.albums.findIndex(
-      (album) => album.id === id,
-    );
-
-    if (favoriteAlbumId === -1) this.favs.albums.splice(favoriteAlbumId, 1);
+    this.favs.albums = this.favs.albums.filter((album) => album.id !== id);
 
     this.albums.splice(album, 1);
     return res.status(204).json({ message: 'Album was deleted' });
