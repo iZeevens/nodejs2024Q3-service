@@ -5,9 +5,9 @@ services:
     image: nextjs-app
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "4000:4000"
     restart: always
     environment:
       - NODE_ENV=production
