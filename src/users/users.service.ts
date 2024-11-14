@@ -44,14 +44,13 @@ export default class UsersService {
   async createUser(body: CreateUserDto, res: Response) {
     const { login, password } = body;
 
-    const date = Date.now();
     const user = this.usersRepository.create({
       id: randomUUID(),
       login,
       password,
       version: 1,
-      createdAt: date,
-      updatedAt: date,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     const savedUser = await this.usersRepository.save(user);

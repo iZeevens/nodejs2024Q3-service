@@ -21,9 +21,21 @@ export class User {
   @VersionColumn()
   version: number;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({
+    type: 'timestamp',
+    transformer: {
+      to: (value: Date) => value,
+      from: (value: Date) => value.getTime(),
+    },
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    transformer: {
+      to: (value: Date) => value,
+      from: (value: Date) => value.getTime(),
+    },
+  })
   updatedAt: Date;
 }
