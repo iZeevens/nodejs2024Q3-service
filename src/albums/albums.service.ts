@@ -38,7 +38,7 @@ export default class AlbumsService {
 
     const album = this.albumsRepository.create({ name, year, artistId });
 
-    const savedAlbum = this.albumsRepository.save(album);
+    const savedAlbum = await this.albumsRepository.save(album);
     return res.status(201).json(savedAlbum);
   }
 
@@ -54,8 +54,8 @@ export default class AlbumsService {
     if (name) album.name = name;
     if (year) album.year = year;
     if (artistId !== undefined) album.artistId = artistId;
+    const updatedAlbum = await this.albumsRepository.save(album);
 
-    const updatedAlbum = this.albumsRepository.save(album);
     return ResponseHelper.sendOk(res, updatedAlbum);
   }
 
@@ -75,7 +75,7 @@ export default class AlbumsService {
     this.favs.albums = this.favs.albums.filter((albumId) => albumId !== id);
     //
 
-    this.albumsRepository.delete(id);
+    await this.albumsRepository.delete(id);
     return res.status(204).json({ message: 'Album was deleted' });
   }
 }
