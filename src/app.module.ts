@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { Artist } from './artists/entities/artist.entity';
 import { Track } from './tracks/entities/track.entitiy';
+import { Album } from './albums/entities/album.entity';
 import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
@@ -17,14 +18,14 @@ import { FavoritesModule } from './favorites/favorites.module';
       port: 5432,
       password: 'root',
       username: 'root',
-      entities: [User, Artist, Track],
+      entities: [User, Artist, Track, Album],
       database: 'pgWithNest',
       synchronize: true,
     }),
     UsersModule,
     ArtistsModule,
     TracksModule,
-    // AlbumsModule,
+    AlbumsModule,
     // FavoritesModule,
   ],
 })

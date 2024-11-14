@@ -22,7 +22,7 @@ export default class TracksService {
   }
 
   async findById(id: string, res: Response) {
-    const track = this.tracksRepository.findOne({ where: { id } });
+    const track = await this.tracksRepository.findOne({ where: { id } });
 
     if (!track) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
@@ -40,8 +40,8 @@ export default class TracksService {
       albumId,
       duration,
     });
-
     const savedTrack = await this.tracksRepository.save(track);
+
     return res.status(201).json(savedTrack);
   }
 
@@ -58,13 +58,13 @@ export default class TracksService {
     if (albumId !== undefined) track.albumId = albumId;
     if (duration) track.duration = duration;
 
-    const updatedTrack = this.tracksRepository.save(track);
+    const updatedTrack = await this.tracksRepository.save(track);
 
     return ResponseHelper.sendOk(res, updatedTrack);
   }
 
   async deleteTrack(id: string, res: Response) {
-    const track = this.tracksRepository.findOne({ where: { id } });
+    const track = await this.tracksRepository.findOne({ where: { id } });
 
     if (!track) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
@@ -74,7 +74,7 @@ export default class TracksService {
     this.favs.tracks = this.favs.tracks.filter((trackId) => trackId !== id);
     //
 
-    this.tracksRepository.delete(id);
+    await this.tracksRepository.delete(id);
     return res.status(204).json({ message: 'Track was deleted' });
   }
 }

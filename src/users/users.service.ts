@@ -50,7 +50,6 @@ export default class UsersService {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
     const savedUser = await this.usersRepository.save(user);
 
     return ResponseHelper.sendCreated(res, this.userWithoutPassword(savedUser));
