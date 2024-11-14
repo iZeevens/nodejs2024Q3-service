@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { Artist } from './artists/entities/artist.entity';
 import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
@@ -15,12 +16,12 @@ import { FavoritesModule } from './favorites/favorites.module';
       port: 5432,
       password: 'root',
       username: 'root',
-      entities: [User],
+      entities: [User, Artist],
       database: 'pgWithNest',
       synchronize: true,
     }),
     UsersModule,
-    // ArtistsModule,
+    ArtistsModule,
     // TracksModule,
     // AlbumsModule,
     // FavoritesModule,

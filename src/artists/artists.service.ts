@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Artist as ArtistEntity } from './entities/artist.entity';
 import { Artist } from './interfaces/artist.interfaces';
+import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
 import { randomUUID } from 'crypto';
@@ -12,17 +15,21 @@ import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 
 @Injectable()
 export default class ArtistsService {
-  private artists: Artist[] = db['artist'];
+  constructor(
+    @InjectRepository(ArtistEntity)
+    private artistsRepository: Repository<Artist>,
+  ) {}
+
   private tracks: Track[] = db['track'];
   private albums: Album[] = db['album'];
   private favs: Favorites = db['favs'];
 
-  getArtists(res: Response) {
-    return ResponseHelper.sendOk(res, this.artists);
+  async getArtists(res: Response) {
+    return ResponseHelper.sendOk(res, await this.artistsRepository.find());
   }
 
-  getArtistsById(id: string, res: Response) {
-    const artist = existById('artist', id);
+  async getArtistsById(id: string, res: Response) {
+    const artist = await this.artistsRepository.findOne({ where: { id } });
 
     if (!artist) {
       return ResponseHelper.sendNotFound(res, 'Artist not found');
@@ -31,17 +38,21 @@ export default class ArtistsService {
     return ResponseHelper.sendOk(res, artist);
   }
 
-  createArtist(body: CreateArtistDto, res: Response) {
+  async createArtist(body: CreateArtistDto, res: Response) {
     const { name, grammy } = body;
 
-    const data = { id: randomUUID(), name, grammy };
+    const artist = this.artistsRepository.create({
+      id: randomUUID(),
+      name,
+      grammy,
+    });
 
-    this.artists.push(data);
-    return res.status(201).json(data);
+    const savedArtist = await this.artistsRepository.save(artist);
+    return res.status(201).json(savedArtist);
   }
 
-  updateArtist(id: string, body: UpdateArtistDto, res: Response) {
-    const artist = existById('artist', id) as Artist;
+  async updateArtist(id: string, body: UpdateArtistDto, res: Response) {
+    const artist = await this.artistsRepository.findOne({ where: { id } });
 
     if (!artist) {
       return ResponseHelper.sendNotFound(res, 'Artist not found');
@@ -52,24 +63,27 @@ export default class ArtistsService {
     if (name) artist.name = name;
     if (grammy !== null || grammy !== undefined) artist.grammy = grammy;
 
-    return ResponseHelper.sendOk(res, artist);
+    const updateArtistArtist = await this.artistsRepository.save(artist);
+    return ResponseHelper.sendOk(res, updateArtistArtist);
   }
 
-  deleteArtist(id: string, res: Response) {
-    const artistIndex = this.artists.findIndex((artist) => artist.id === id);
+  async deleteArtist(id: string, res: Response) {
+    const artist = await this.artistsRepository.findOne({ where: { id } });
 
-    if (artistIndex === -1) {
+    if (!artist) {
       return ResponseHelper.sendNotFound(res, 'Artist not found');
     }
 
+    // Change that
     const trackArtistId = this.tracks.find((track) => track.artistId === id);
     const albumArtistId = this.albums.find((album) => album.artistId === id);
     this.favs.artists = this.favs.artists.filter((artistId) => artistId !== id);
 
     if (trackArtistId) trackArtistId.artistId = null;
     if (albumArtistId) albumArtistId.artistId = null;
+    //
 
-    this.artists.splice(artistIndex, 1);
+    this.artistsRepository.delete(id);
     return res.status(204).json({ message: 'Artist was deleted' });
   }
 }
