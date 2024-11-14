@@ -1,24 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { Track } from './interfaces/track.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Track as TrackEntity } from './entities/track.entitiy';
+import { Repository } from 'typeorm';
 import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 import { Response } from 'express';
-import { randomUUID } from 'crypto';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
-import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
 import { db } from 'src/data/inMemoryDB';
 
 @Injectable()
 export default class TracksService {
-  private tracks: Track[] = db['track'];
+  constructor(
+    @InjectRepository(TrackEntity)
+    private tracksRepository: Repository<TrackEntity>,
+  ) {}
+
   private favs: Favorites = db['favs'];
 
-  findAll(res: Response) {
-    return ResponseHelper.sendOk(res, this.tracks);
+  async findAll(res: Response) {
+    return ResponseHelper.sendOk(res, await this.tracksRepository.find());
   }
 
-  findById(id: string, res: Response) {
-    const track = existById('track', id);
+  async findById(id: string, res: Response) {
+    const track = this.tracksRepository.findOne({ where: { id } });
 
     if (!track) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
@@ -27,17 +31,22 @@ export default class TracksService {
     return ResponseHelper.sendOk(res, track);
   }
 
-  createTrack(body: CreateTrackDto, res: Response) {
+  async createTrack(body: CreateTrackDto, res: Response) {
     const { name, artistId, albumId, duration } = body;
 
-    const data = { id: randomUUID(), name, artistId, albumId, duration };
+    const track = this.tracksRepository.create({
+      name,
+      artistId,
+      albumId,
+      duration,
+    });
 
-    this.tracks.push(data);
-    return res.status(201).json(data);
+    const savedTrack = await this.tracksRepository.save(track);
+    return res.status(201).json(savedTrack);
   }
 
-  updateTrack(id: string, body: UpdateTrackDto, res: Response) {
-    const track = existById('track', id) as Track;
+  async updateTrack(id: string, body: UpdateTrackDto, res: Response) {
+    const track = await this.tracksRepository.findOne({ where: { id } });
 
     if (!track) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
@@ -49,18 +58,23 @@ export default class TracksService {
     if (albumId !== undefined) track.albumId = albumId;
     if (duration) track.duration = duration;
 
-    return ResponseHelper.sendOk(res, track);
+    const updatedTrack = this.tracksRepository.save(track);
+
+    return ResponseHelper.sendOk(res, updatedTrack);
   }
 
-  deleteTrack(id: string, res: Response) {
-    const track = this.tracks.findIndex((track) => track.id === id);
+  async deleteTrack(id: string, res: Response) {
+    const track = this.tracksRepository.findOne({ where: { id } });
 
-    if (track === -1) {
+    if (!track) {
       return ResponseHelper.sendNotFound(res, 'Track not found');
     }
-    this.favs.tracks = this.favs.tracks.filter((trackId) => trackId !== id);
 
-    this.tracks.splice(track, 1);
+    // Change that
+    this.favs.tracks = this.favs.tracks.filter((trackId) => trackId !== id);
+    //
+
+    this.tracksRepository.delete(id);
     return res.status(204).json({ message: 'Track was deleted' });
   }
 }

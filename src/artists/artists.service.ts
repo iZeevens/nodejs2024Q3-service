@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist as ArtistEntity } from './entities/artist.entity';
-import { Artist } from './interfaces/artist.interfaces';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
-import { randomUUID } from 'crypto';
-import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
 import { db } from 'src/data/inMemoryDB';
 import { Track } from 'src/tracks/interfaces/track.interface';
@@ -17,7 +14,7 @@ import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 export default class ArtistsService {
   constructor(
     @InjectRepository(ArtistEntity)
-    private artistsRepository: Repository<Artist>,
+    private artistsRepository: Repository<ArtistEntity>,
   ) {}
 
   private tracks: Track[] = db['track'];
@@ -42,7 +39,6 @@ export default class ArtistsService {
     const { name, grammy } = body;
 
     const artist = this.artistsRepository.create({
-      id: randomUUID(),
       name,
       grammy,
     });

@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User as UserEntity } from './entities/user.entity';
 import { Response } from 'express';
-import { randomUUID } from 'crypto';
 import { CreateUserDto, UpdatePasswordDto } from './dto/users.dto';
 import ResponseHelper from 'src/helpers/responseHelper';
 
@@ -45,7 +44,6 @@ export default class UsersService {
     const { login, password } = body;
 
     const user = this.usersRepository.create({
-      id: randomUUID(),
       login,
       password,
       version: 1,
