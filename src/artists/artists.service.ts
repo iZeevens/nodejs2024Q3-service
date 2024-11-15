@@ -1,25 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist as ArtistEntity } from './entities/artist.entity';
+import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
+import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
 import ResponseHelper from 'src/helpers/responseHelper';
-import { db } from 'src/data/inMemoryDB';
-import { Track } from 'src/tracks/interfaces/track.interface';
-import { Album } from 'src/albums/interfaces/album.interface';
-import { Favorites } from 'src/favorites/interfaces/favorite.interface';
+// import { db } from 'src/data/inMemoryDB';
+// import { Track } from 'src/tracks/interfaces/track.interface';
+// import { Album } from 'src/albums/interfaces/album.interface';
+// import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 
 @Injectable()
 export default class ArtistsService {
   constructor(
     @InjectRepository(ArtistEntity)
     private artistsRepository: Repository<ArtistEntity>,
-  ) {}
 
-  private tracks: Track[] = db['track'];
-  private albums: Album[] = db['album'];
-  private favs: Favorites = db['favs'];
+    @InjectRepository(AlbumEntity)
+    private albumRepository: Repository<AlbumEntity>,
+
+    @InjectRepository(TrackEntity)
+    private trackRepository: Repository<TrackEntity>,
+  ) {}
 
   async getArtists(res: Response) {
     return ResponseHelper.sendOk(res, await this.artistsRepository.find());
@@ -71,12 +75,7 @@ export default class ArtistsService {
     }
 
     // Change that
-    const trackArtistId = this.tracks.find((track) => track.artistId === id);
-    const albumArtistId = this.albums.find((album) => album.artistId === id);
-    this.favs.artists = this.favs.artists.filter((artistId) => artistId !== id);
-
-    if (trackArtistId) trackArtistId.artistId = null;
-    if (albumArtistId) albumArtistId.artistId = null;
+    // this.favs.artists = this.favs.artists.filter((artistId) => artistId !== id);
     //
 
     this.artistsRepository.delete(id);

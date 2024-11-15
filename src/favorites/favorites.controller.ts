@@ -46,30 +46,30 @@ export default class FavoritesController {
     return this.favoritesService.addToFavs(id, 'artists', res);
   }
 
-  @Delete('track/:id')
-  deleteTrackFromFavs(
-    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
-    id: string,
-    @Res() res: Response,
-  ) {
-    return this.favoritesService.deleteFromFavs(id, 'track', res);
-  }
+  // @Delete('track/:id')
+  // deleteTrackFromFavs(
+  //   @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+  //   id: string,
+  //   @Res() res: Response,
+  // ) {
+  //   return this.favoritesService.deleteFromFavs(id, 'track', res);
+  // }
 
-  @Delete('album/:id')
-  deleteAlbumFromFavs(
-    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
-    id: string,
-    @Res() res: Response,
-  ) {
-    return this.favoritesService.deleteFromFavs(id, 'album', res);
-  }
+  // @Delete('album/:id')
+  // deleteAlbumFromFavs(
+  //   @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+  //   id: string,
+  //   @Res() res: Response,
+  // ) {
+  //   return this.favoritesService.deleteFromFavs(id, 'album', res);
+  // }
 
-  @Delete('artist/:id')
-  deleteArtistFromFavs(
-    @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
-    id: string,
-    @Res() res: Response,
-  ) {
-    return this.favoritesService.deleteFromFavs(id, 'artist', res);
-  }
+  // @Delete('artist/:id')
+  // deleteArtistFromFavs(
+  //   @Param('id', new ParseUUIDPipe({ errorHttpStatusCode: 400 }))
+  //   id: string,
+  //   @Res() res: Response,
+  // ) {
+  //   return this.favoritesService.deleteFromFavs(id, 'artist', res);
+  // }
 }

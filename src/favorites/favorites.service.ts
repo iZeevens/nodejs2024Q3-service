@@ -99,20 +99,20 @@ export default class FavoritesService {
     return res.status(201).json(item);
   }
 
-  deleteFromFavs(
-    id: string,
-    type: 'track' | 'artist' | 'album',
-    res: Response,
-  ) {
-    const isExist = this.favoritesRepository.findOne({
-      where: { [type]: { id } },
-    });
+  // deleteFromFavs(
+  //   id: string,
+  //   type: 'track' | 'artist' | 'album',
+  //   res: Response,
+  // ) {
+  //   const isExist = this.favoritesRepository.findOne({
+  //     where: { [type]: { id } },
+  //   });
 
-    if (!isExist) {
-      return res.status(422).json({ message: `${type} not found` });
-    }
+  //   if (!isExist) {
+  //     return res.status(422).json({ message: `${type} not found` });
+  //   }
 
-    this.favoritesRepository.delete({ [type]: { id } });
-    return res.status(204).json(undefined);
-  }
+  //   this.favoritesRepository.delete({ [type]: { id } });
+  //   return res.status(204).json(undefined);
+  // }
 }

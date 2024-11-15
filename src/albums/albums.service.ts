@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Album as AlbumEntity } from './entities/album.entity';
-import { Track } from 'src/tracks/interfaces/track.interface';
-import { Favorites } from 'src/favorites/interfaces/favorite.interface';
+// import { Track } from 'src/tracks/interfaces/track.interface';
+// import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 import { Repository } from 'typeorm';
 import { CreateAlbum, UpdateAlbum } from './dto/albums.dto';
 import { Response } from 'express';
 import ResponseHelper from 'src/helpers/responseHelper';
-import { db } from 'src/data/inMemoryDB';
+// import { db } from 'src/data/inMemoryDB';
 
 @Injectable()
 export default class AlbumsService {
@@ -16,8 +16,8 @@ export default class AlbumsService {
     private albumsRepository: Repository<AlbumEntity>,
   ) {}
 
-  private tracks: Track[] = db['track'];
-  private favs: Favorites = db['favs'];
+  // private tracks: Track[] = db['track'];
+  // private favs: Favorites = db['favs'];
 
   async findAll(res: Response) {
     return ResponseHelper.sendOk(res, await this.albumsRepository.find());
@@ -67,12 +67,12 @@ export default class AlbumsService {
     }
 
     // Change that
-    this.tracks.forEach((track) => {
-      if (track.albumId === id) {
-        track.albumId = null;
-      }
-    });
-    this.favs.albums = this.favs.albums.filter((albumId) => albumId !== id);
+    // this.tracks.forEach((track) => {
+    //   if (track.albumId === id) {
+    //     track.albumId = null;
+    //   }
+    // });
+    // this.favs.albums = this.favs.albums.filter((albumId) => albumId !== id);
     //
 
     await this.albumsRepository.delete(id);

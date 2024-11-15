@@ -10,10 +10,16 @@ export class Track {
   @Column()
   name: string;
 
-  @ManyToOne(() => Artist, (artist) => artist.id, { nullable: true })
+  @ManyToOne(() => Artist, (artist) => artist.id, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   artistId: Artist | null;
 
-  @ManyToOne(() => Album, (album) => album.id, { nullable: true })
+  @ManyToOne(() => Album, (album) => album.id, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   albumId: Album | null;
 
   @Column('int')
