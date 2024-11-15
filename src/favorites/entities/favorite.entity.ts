@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 @Entity()
 export class Favorites {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({ default: 'singleton' })
   id: string;
 
   @Column('uuid', { array: true, default: [] })
