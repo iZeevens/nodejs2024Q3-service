@@ -39,6 +39,7 @@ export default class FavoritesService {
 
   private async helperFindResult(type: 'artists' | 'albums' | 'tracks') {
     const favorites = await this.favoritesRepository.findOne({
+      where: {},
       select: [type],
     });
     const ids = favorites[type];
@@ -71,12 +72,19 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    const favorites = await this.favoritesRepository.findOne({
-      select: [type],
-    });
-    const favoristesType = favorites[type];
-    if (!favoristesType.includes(id)) {
-      favoristesType.push(id);
+    let favorites = await this.favoritesRepository.findOne({ where: {} });
+
+    if (!favorites) {
+      favorites = this.favoritesRepository.create({
+        artists: [],
+        albums: [],
+        tracks: [],
+      });
+    }
+
+    const favoritesType = favorites[type];
+    if (!favoritesType.includes(id)) {
+      favoritesType.push(id);
       await this.favoritesRepository.save(favorites);
     }
 
