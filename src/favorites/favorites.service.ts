@@ -24,34 +24,6 @@ export default class FavoritesService {
     private trackRepository: Repository<TrackEntity>,
   ) {}
 
-  private async helperFindResult(type: 'artists' | 'albums' | 'tracks') {
-    const favorites = await this.favoritesRepository.findOne({
-      select: [type],
-    });
-    const ids = favorites[type];
-
-    switch (type) {
-      case 'artists':
-        return await Promise.all(
-          ids.map((id) => {
-            this.artistsRepository.findOne({ where: { id } });
-          }),
-        );
-      case 'albums':
-        return await Promise.all(
-          ids.map((id) => {
-            this.albumRepository.findOne({ where: { id } });
-          }),
-        );
-      case 'tracks':
-        return await Promise.all(
-          ids.map((id) => {
-            this.trackRepository.findOne({ where: { id } });
-          }),
-        );
-    }
-  }
-
   private getRepositoryByType(type: 'tracks' | 'artists' | 'albums') {
     switch (type) {
       case 'tracks':
@@ -65,12 +37,24 @@ export default class FavoritesService {
     }
   }
 
-  getFavorites(res: Response) {
-    const result = {
-      artists: this.helperFindResult('artists'),
-      albums: this.helperFindResult('albums'),
-      tracks: this.helperFindResult('tracks'),
-    };
+  private async helperFindResult(type: 'artists' | 'albums' | 'tracks') {
+    const favorites = await this.favoritesRepository.findOne({
+      select: [type],
+    });
+    const ids = favorites[type];
+    const repository = this.getRepositoryByType(type);
+
+    return Promise.all(ids.map((id) => repository.findOne({ where: { id } })));
+  }
+
+  async getFavorites(res: Response) {
+    const [artists, albums, tracks] = await Promise.all([
+      this.helperFindResult('artists'),
+      this.helperFindResult('albums'),
+      this.helperFindResult('tracks'),
+    ]);
+
+    const result = { artists, albums, tracks };
 
     return ResponseHelper.sendOk(res, result);
   }
