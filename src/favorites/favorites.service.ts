@@ -1,44 +1,102 @@
-import { Favorites, FavoritesResponse } from './interfaces/favorite.interface';
-import { Artist } from 'src/artists/interfaces/artist.interfaces';
-import { Track } from 'src/tracks/interfaces/track.interface';
-import { Album } from 'src/albums/interfaces/album.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Favorites as FavoritesEntity } from './entities/favorite.entity';
+import { Artist as ArtistEntity } from 'src/artists/entities/artist.entity';
+import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
+import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
+import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
-import existById from 'src/helpers/checkExist';
 import ResponseHelper from 'src/helpers/responseHelper';
-import { db } from 'src/data/inMemoryDB';
 
 @Injectable()
 export default class FavoritesService {
-  private favorites: Favorites = db['favs'];
+  constructor(
+    @InjectRepository(FavoritesEntity)
+    private favoritesRepository: Repository<FavoritesEntity>,
 
-  private helperFindResult(type: 'artist' | 'album' | 'track') {
-    return this.favorites[`${type}s`].map((itemId) =>
-      (db[type] as (Artist | Track | Album)[]).find(
-        (item) => item.id === itemId,
-      ),
-    );
+    @InjectRepository(ArtistEntity)
+    private artistsRepository: Repository<ArtistEntity>,
+
+    @InjectRepository(AlbumEntity)
+    private albumRepository: Repository<AlbumEntity>,
+
+    @InjectRepository(TrackEntity)
+    private trackRepository: Repository<TrackEntity>,
+  ) {}
+
+  private async helperFindResult(type: 'artists' | 'albums' | 'tracks') {
+    const favorites = await this.favoritesRepository.findOne({
+      select: [type],
+    });
+    const ids = favorites[type];
+
+    switch (type) {
+      case 'artists':
+        return await Promise.all(
+          ids.map((id) => {
+            this.artistsRepository.findOne({ where: { id } });
+          }),
+        );
+      case 'albums':
+        return await Promise.all(
+          ids.map((id) => {
+            this.albumRepository.findOne({ where: { id } });
+          }),
+        );
+      case 'tracks':
+        return await Promise.all(
+          ids.map((id) => {
+            this.trackRepository.findOne({ where: { id } });
+          }),
+        );
+    }
+  }
+
+  private getRepositoryByType(type: 'tracks' | 'artists' | 'albums') {
+    switch (type) {
+      case 'tracks':
+        return this.trackRepository;
+      case 'artists':
+        return this.artistsRepository;
+      case 'albums':
+        return this.albumRepository;
+      default:
+        throw new Error('Invalid type');
+    }
   }
 
   getFavorites(res: Response) {
     const result = {
-      artists: this.helperFindResult('artist'),
-      albums: this.helperFindResult('album'),
-      tracks: this.helperFindResult('track'),
-    } as FavoritesResponse;
+      artists: this.helperFindResult('artists'),
+      albums: this.helperFindResult('albums'),
+      tracks: this.helperFindResult('tracks'),
+    };
 
     return ResponseHelper.sendOk(res, result);
   }
 
-  addToFavs(id: string, type: 'track' | 'artist' | 'album', res: Response) {
-    const isExist = existById(type, id);
+  async addToFavs(
+    id: string,
+    type: 'tracks' | 'artists' | 'albums',
+    res: Response,
+  ) {
+    const repository = this.getRepositoryByType(type);
+    const item = await repository.findOne({ where: { id } });
 
-    if (!isExist) {
+    if (!item) {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    this.favorites[`${type}s`].push(id);
-    return res.status(201).json(isExist);
+    const favorites = await this.favoritesRepository.findOne({
+      select: [type],
+    });
+    const favoristesType = favorites[type];
+    if (!favoristesType.includes(id)) {
+      favoristesType.push(id);
+      await this.favoritesRepository.save(favorites);
+    }
+
+    return res.status(201).json(item);
   }
 
   deleteFromFavs(
@@ -46,15 +104,15 @@ export default class FavoritesService {
     type: 'track' | 'artist' | 'album',
     res: Response,
   ) {
-    const isExist = this.favorites[`${type}s`].findIndex(
-      (itemId) => itemId === id,
-    );
+    const isExist = this.favoritesRepository.findOne({
+      where: { [type]: { id } },
+    });
 
-    if (isExist === -1) {
+    if (!isExist) {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    this.favorites[`${type}s`].splice(isExist, 1);
+    this.favoritesRepository.delete({ [type]: { id } });
     return res.status(204).json(undefined);
   }
 }

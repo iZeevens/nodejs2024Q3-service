@@ -25,7 +25,7 @@ export default class FavoritesController {
     id: string,
     @Res() res: Response,
   ) {
-    return this.favoritesService.addToFavs(id, 'track', res);
+    return this.favoritesService.addToFavs(id, 'tracks', res);
   }
 
   @Post('album/:id')
@@ -34,7 +34,7 @@ export default class FavoritesController {
     id: string,
     @Res() res: Response,
   ) {
-    return this.favoritesService.addToFavs(id, 'album', res);
+    return this.favoritesService.addToFavs(id, 'albums', res);
   }
 
   @Post('artist/:id')
@@ -43,7 +43,7 @@ export default class FavoritesController {
     id: string,
     @Res() res: Response,
   ) {
-    return this.favoritesService.addToFavs(id, 'artist', res);
+    return this.favoritesService.addToFavs(id, 'artists', res);
   }
 
   @Delete('track/:id')
