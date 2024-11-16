@@ -1,6 +1,4 @@
 import { IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
-import { Album } from 'src/albums/entities/album.entity';
-import { Artist } from 'src/artists/entities/artist.entity';
 
 class CreateTrackDto {
   @IsString()

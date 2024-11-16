@@ -13,9 +13,6 @@ export default class AlbumsService {
     private albumsRepository: Repository<AlbumEntity>,
   ) {}
 
-  // private tracks: Track[] = db['track'];
-  // private favs: Favorites = db['favs'];
-
   async findAll(res: Response) {
     const result = await this.albumsRepository.find();
 

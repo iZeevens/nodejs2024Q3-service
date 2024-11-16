@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist as ArtistEntity } from './entities/artist.entity';
-// import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
-// import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
@@ -63,10 +61,6 @@ export default class ArtistsService {
     if (!artist) {
       return ResponseHelper.sendNotFound(res, 'Artist not found');
     }
-
-    // Change that
-    // this.favs.artists = this.favs.artists.filter((artistId) => artistId !== id);
-    //
 
     this.artistsRepository.delete(id);
     return res.status(204).json({ message: 'Artist was deleted' });
