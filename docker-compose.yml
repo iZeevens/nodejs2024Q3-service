@@ -5,14 +5,16 @@ services:
     image: nextjs-app
     build:
       context: .
+      target: dev
       dockerfile: Dockerfile
     ports:
       - '4000:4000'
     restart: always
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     volumes:
       - .:/app
+      - /app/node_modules
     depends_on:
       - postgres
 
