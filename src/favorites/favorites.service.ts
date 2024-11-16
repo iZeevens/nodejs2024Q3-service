@@ -3,6 +3,7 @@ import { Favorites as FavoritesEntity } from './entities/favorite.entity';
 import { Artist as ArtistEntity } from 'src/artists/entities/artist.entity';
 import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
 import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
+import { mappedResultRelations } from 'src/helpers/mappedResultRelations';
 import { In, Repository } from 'typeorm';
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
@@ -37,9 +38,22 @@ export default class FavoritesService {
     }
   }
 
+  private getRelationsByType(type: 'artists' | 'albums' | 'tracks'): string[] {
+    switch (type) {
+      case 'artists':
+        return [];
+      case 'albums':
+        return ['artistId'];
+      case 'tracks':
+        return ['artistId', 'albumId'];
+      default:
+        return [];
+    }
+  }
+
   private async helperFindResult<
     T extends TrackEntity | AlbumEntity | ArtistEntity,
-  >(type: 'artists' | 'albums' | 'tracks'): Promise<T[]> {
+  >(type: 'artists' | 'albums' | 'tracks') {
     const favorites = await this.favoritesRepository.findOne({
       where: {},
       select: [type],
@@ -47,12 +61,18 @@ export default class FavoritesService {
 
     const ids = favorites?.[type] || [];
     const repository = this.getRepositoryByType(type);
+    const relations = this.getRelationsByType(type);
 
-    return repository.find({
+    const result = await repository.find({
       where: {
         id: In(ids),
       },
-    }) as Promise<T[]>;
+      relations,
+    });
+
+    const mappedResult = mappedResultRelations(result, type);
+
+    return mappedResult as T[];
   }
 
   async getFavorites(res: Response) {

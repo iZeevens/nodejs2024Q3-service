@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Album as AlbumEntity } from './entities/album.entity';
-// import { Track } from 'src/tracks/interfaces/track.interface';
-// import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 import { Repository } from 'typeorm';
 import { CreateAlbum, UpdateAlbum } from './dto/albums.dto';
 import { Response } from 'express';
 import ResponseHelper from 'src/helpers/responseHelper';
-// import { db } from 'src/data/inMemoryDB';
-
+import { mappedResultRelations } from 'src/helpers/mappedResultRelations';
 @Injectable()
 export default class AlbumsService {
   constructor(
@@ -24,10 +21,7 @@ export default class AlbumsService {
       relations: ['artistId'],
     });
 
-    const mappedResult = result.map((album) => ({
-      ...album,
-      artistId: album.artistId?.id || null,
-    }));
+    const mappedResult = mappedResultRelations(result, 'albums');
 
     return ResponseHelper.sendOk(res, mappedResult);
   }

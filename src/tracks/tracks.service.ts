@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
 import ResponseHelper from 'src/helpers/responseHelper';
+import { mappedResultRelations } from 'src/helpers/mappedResultRelations';
 
 @Injectable()
 export default class TracksService {
@@ -18,11 +19,7 @@ export default class TracksService {
       relations: ['artistId', 'albumId'],
     });
 
-    const mappedResult = result.map((track) => ({
-      ...track,
-      artistId: track.artistId?.id || null,
-      albumId: track.albumId?.id || null,
-    }));
+    const mappedResult = mappedResultRelations(result, 'tracks');
 
     return ResponseHelper.sendOk(res, mappedResult);
   }
