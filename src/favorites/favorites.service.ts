@@ -25,6 +25,8 @@ export default class FavoritesService {
     private trackRepository: Repository<TrackEntity>,
   ) {}
 
+  id = 'singleton';
+
   private getRepositoryByType(type: 'tracks' | 'artists' | 'albums') {
     switch (type) {
       case 'tracks':
@@ -40,8 +42,8 @@ export default class FavoritesService {
 
   async findAll(res: Response) {
     const favorites = await this.favoritesRepository.findOne({
-      where: {},
-      select: ['tracks', 'albums', 'artists'],
+      where: { id: this.id },
+      relations: ['tracks', 'albums', 'artists'],
     });
 
     if (!favorites) {
@@ -54,15 +56,15 @@ export default class FavoritesService {
 
     const [tracks, albums, artists] = await Promise.all([
       this.trackRepository.find({
-        where: { id: In(favorites.tracks || []) },
+        where: { id: In(favorites.tracks.map((track) => track.id) || []) },
         relations: ['artistId', 'albumId'],
       }),
       this.albumRepository.find({
-        where: { id: In(favorites.albums || []) },
+        where: { id: In(favorites.albums.map((album) => album.id) || []) },
         relations: ['artistId'],
       }),
       this.artistsRepository.find({
-        where: { id: In(favorites.artists || []) },
+        where: { id: In(favorites.artists.map((artist) => artist.id) || []) },
       }),
     ]);
 
@@ -91,7 +93,10 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    let favorites = await this.favoritesRepository.findOne({ where: {} });
+    let favorites = await this.favoritesRepository.findOne({
+      where: { id: this.id },
+      relations: [type],
+    });
 
     if (!favorites) {
       favorites = this.favoritesRepository.create({
@@ -102,11 +107,9 @@ export default class FavoritesService {
       await this.favoritesRepository.save(favorites);
     }
 
-    const favoritesType = favorites[type];
-    if (!favoritesType.includes(id)) {
-      favoritesType.push(id);
-      await this.favoritesRepository.save(favorites);
-    }
+    const favoriteType = favorites[type];
+    favoriteType.push(item as any);
+    await this.favoritesRepository.save(favorites);
 
     return res.status(201).json(item);
   }
@@ -116,15 +119,27 @@ export default class FavoritesService {
     type: 'tracks' | 'artists' | 'albums',
     res: Response,
   ) {
-    const favorites = await this.favoritesRepository.findOne({ where: {} });
+    const favorites = await this.favoritesRepository.findOne({
+      where: { id: this.id },
+      relations: [type],
+    });
 
     if (!favorites) {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    favorites[type] = favorites[type].filter((favId) => favId !== id);
+    const favoriteType = favorites[type];
+    const itemIndex = favoriteType.findIndex((item) => item.id === id);
 
+    if (itemIndex === -1) {
+      return res
+        .status(422)
+        .json({ message: `${type} not found in favorites` });
+    }
+
+    favoriteType.splice(itemIndex, 1);
     await this.favoritesRepository.save(favorites);
-    return res.status(204).json(undefined);
+
+    return res.status(204).json();
   }
 }

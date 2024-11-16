@@ -1,36 +1,22 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, OneToMany, JoinColumn } from 'typeorm';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { Album } from 'src/albums/entities/album.entity';
+import { Track } from 'src/tracks/entities/track.entitiy';
 
 @Entity()
 export class Favorites {
   @PrimaryColumn({ default: 'singleton' })
   id: string;
 
-  @Column('uuid', { array: true, default: [] })
-  artists: string[];
+  @OneToMany(() => Artist, (artist) => artist.favorites)
+  @JoinColumn({ name: 'artists' })
+  artists: Artist[];
 
-  @Column('uuid', { array: true, default: [] })
-  albums: string[];
+  @OneToMany(() => Album, (album) => album.favorites)
+  @JoinColumn({ name: 'albums' })
+  albums: Album[];
 
-  @Column('uuid', { array: true, default: [] })
-  tracks: string[];
+  @OneToMany(() => Track, (track) => track.favorites)
+  @JoinColumn({ name: 'tracks' })
+  tracks: Track[];
 }
-
-// import { Entity, PrimaryColumn, OneToMany } from 'typeorm';
-// import { Artist } from 'src/artists/entities/artist.entity';
-// import { Album } from 'src/albums/entities/album.entity';
-// import { Track } from 'src/tracks/entities/track.entitiy';
-
-// @Entity()
-// export class Favorites {
-//   @PrimaryColumn({ default: 'singleton' })
-//   id: string;
-
-//   @OneToMany(() => Artist, (artist) => artist.id)
-//   artists: Artist[];
-
-//   @OneToMany(() => Album, (album) => album.id)
-//   albums: Album[];
-
-//   @OneToMany(() => Track, (track) => track.id)
-//   tracks: Track[];
-// }
