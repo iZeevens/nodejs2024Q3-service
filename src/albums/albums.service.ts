@@ -20,6 +20,11 @@ export default class AlbumsService {
   // private favs: Favorites = db['favs'];
 
   async findAll(res: Response) {
+    const result = await this.albumsRepository.find({
+      relations: ['artistId'],
+    });
+
+    console.log(result);
     return ResponseHelper.sendOk(res, await this.albumsRepository.find());
   }
 

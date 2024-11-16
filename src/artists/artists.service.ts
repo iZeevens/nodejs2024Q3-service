@@ -7,10 +7,6 @@ import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
 import ResponseHelper from 'src/helpers/responseHelper';
-// import { db } from 'src/data/inMemoryDB';
-// import { Track } from 'src/tracks/interfaces/track.interface';
-// import { Album } from 'src/albums/interfaces/album.interface';
-// import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 
 @Injectable()
 export default class ArtistsService {

@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Track as TrackEntity } from './entities/track.entitiy';
 import { Repository } from 'typeorm';
-// import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 import { Response } from 'express';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
 import ResponseHelper from 'src/helpers/responseHelper';
-// import { db } from 'src/data/inMemoryDB';
 
 @Injectable()
 export default class TracksService {
@@ -15,10 +13,11 @@ export default class TracksService {
     private tracksRepository: Repository<TrackEntity>,
   ) {}
 
-  // private favs: Favorites = db['favs'];
-
   async findAll(res: Response) {
-    return ResponseHelper.sendOk(res, await this.tracksRepository.find());
+    return ResponseHelper.sendOk(
+      res,
+      await this.tracksRepository.find({ relations: ['artistId', 'albumId'] }),
+    );
   }
 
   async findById(id: string, res: Response) {
