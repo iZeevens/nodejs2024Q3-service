@@ -24,8 +24,12 @@ export default class AlbumsService {
       relations: ['artistId'],
     });
 
-    console.log(result);
-    return ResponseHelper.sendOk(res, await this.albumsRepository.find());
+    const mappedResult = result.map((album) => ({
+      ...album,
+      artistId: album.artistId?.id || null,
+    }));
+
+    return ResponseHelper.sendOk(res, mappedResult);
   }
 
   async findById(id: string, res: Response) {

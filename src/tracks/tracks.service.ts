@@ -14,10 +14,17 @@ export default class TracksService {
   ) {}
 
   async findAll(res: Response) {
-    return ResponseHelper.sendOk(
-      res,
-      await this.tracksRepository.find({ relations: ['artistId', 'albumId'] }),
-    );
+    const result = await this.tracksRepository.find({
+      relations: ['artistId', 'albumId'],
+    });
+
+    const mappedResult = result.map((track) => ({
+      ...track,
+      artistId: track.artistId?.id || null,
+      albumId: track.albumId?.id || null,
+    }));
+
+    return ResponseHelper.sendOk(res, mappedResult);
   }
 
   async findById(id: string, res: Response) {
