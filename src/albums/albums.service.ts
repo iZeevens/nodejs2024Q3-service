@@ -17,9 +17,7 @@ export default class AlbumsService {
   // private favs: Favorites = db['favs'];
 
   async findAll(res: Response) {
-    const result = await this.albumsRepository.find({
-      relations: ['artistId'],
-    });
+    const result = await this.albumsRepository.find();
 
     const mappedResult = mappedResultRelations(result, 'albums');
 
@@ -68,15 +66,6 @@ export default class AlbumsService {
     if (!album) {
       return ResponseHelper.sendNotFound(res, 'Album not found');
     }
-
-    // Change that
-    // this.tracks.forEach((track) => {
-    //   if (track.albumId === id) {
-    //     track.albumId = null;
-    //   }
-    // });
-    // this.favs.albums = this.favs.albums.filter((albumId) => albumId !== id);
-    //
 
     await this.albumsRepository.delete(id);
     return res.status(204).json({ message: 'Album was deleted' });

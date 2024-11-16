@@ -46,28 +46,17 @@ export default class FavoritesService {
       relations: ['tracks', 'albums', 'artists'],
     });
 
-    if (!favorites) {
-      return ResponseHelper.sendOk(res, {
-        tracks: [],
-        albums: [],
-        artists: [],
-      });
-    }
-
     const [tracks, albums, artists] = await Promise.all([
       this.trackRepository.find({
         where: { id: In(favorites.tracks.map((track) => track.id) || []) },
-        relations: ['artistId', 'albumId'],
       }),
       this.albumRepository.find({
         where: { id: In(favorites.albums.map((album) => album.id) || []) },
-        relations: ['artistId'],
       }),
       this.artistsRepository.find({
         where: { id: In(favorites.artists.map((artist) => artist.id) || []) },
       }),
     ]);
-
     const tracksResult = mappedResultRelations(tracks, 'tracks');
     const albumsResult = mappedResultRelations(albums, 'albums');
     const artistsResult = mappedResultRelations(artists, 'artists');
@@ -93,19 +82,10 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    let favorites = await this.favoritesRepository.findOne({
+    const favorites = await this.favoritesRepository.findOne({
       where: { id: this.id },
       relations: [type],
     });
-
-    if (!favorites) {
-      favorites = this.favoritesRepository.create({
-        artists: [],
-        albums: [],
-        tracks: [],
-      });
-      await this.favoritesRepository.save(favorites);
-    }
 
     const favoriteType = favorites[type];
     favoriteType.push(item as any);

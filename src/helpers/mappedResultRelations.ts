@@ -11,13 +11,13 @@ function mappedResultRelations(
   if (type === 'albums') {
     return result.map((item) => ({
       ...item,
-      artistId: item.artistId?.id || null,
+      artistId: item.artistId || null,
     }));
   } else if (type === 'tracks') {
     return result.map((item) => ({
       ...item,
-      artistId: item.artistId?.id || null,
-      albumId: item.albumId?.id || null,
+      artistId: item.artistId || null,
+      albumId: item.albumId || null,
     }));
   }
 

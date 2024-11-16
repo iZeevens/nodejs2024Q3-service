@@ -1,7 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+// import { Artist } from 'src/artists/entities/artist.entity';
+// import { Album } from 'src/albums/entities/album.entity';
+import { Favorites } from 'src/favorites/entities/favorite.entity';
 import { Artist } from 'src/artists/entities/artist.entity';
 import { Album } from 'src/albums/entities/album.entity';
-import { Favorites } from 'src/favorites/entities/favorite.entity';
 
 @Entity()
 export class Track {
@@ -11,17 +13,15 @@ export class Track {
   @Column()
   name: string;
 
-  @ManyToOne(() => Artist, (artist) => artist.id, {
+  @Column({
     nullable: true,
-    onDelete: 'SET NULL',
   })
-  artistId: Artist | null;
+  artistId: string | null;
 
-  @ManyToOne(() => Album, (album) => album.id, {
+  @Column({
     nullable: true,
-    onDelete: 'SET NULL',
   })
-  albumId: Album | null;
+  albumId: string | null;
 
   @Column('int')
   duration: number;
@@ -30,4 +30,14 @@ export class Track {
     onDelete: 'CASCADE',
   })
   favorites: Favorites;
+
+  @ManyToOne(() => Artist, (artist) => artist.tracks, {
+    onDelete: 'SET NULL',
+  })
+  artist;
+
+  @ManyToOne(() => Album, (album) => album.tracks, {
+    onDelete: 'SET NULL',
+  })
+  album;
 }

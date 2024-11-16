@@ -8,11 +8,11 @@ class CreateTrackDto {
 
   @IsString()
   @ValidateIf((_, value) => value !== null)
-  artistId: Artist | null;
+  artistId: string | null;
 
   @IsString()
   @ValidateIf((_, value) => value !== null)
-  albumId: Album | null;
+  albumId: string | null;
 
   @IsNumber()
   duration: number;
@@ -26,12 +26,12 @@ class UpdateTrackDto {
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @IsOptional()
-  artistId: Artist | null;
+  artistId: string | null;
 
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @IsOptional()
-  albumId: Album | null;
+  albumId: string | null;
 
   @IsNumber()
   @IsOptional()

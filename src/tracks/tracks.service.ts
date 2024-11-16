@@ -15,9 +15,7 @@ export default class TracksService {
   ) {}
 
   async findAll(res: Response) {
-    const result = await this.tracksRepository.find({
-      relations: ['artistId', 'albumId'],
-    });
+    const result = await this.tracksRepository.find();
 
     const mappedResult = mappedResultRelations(result, 'tracks');
 

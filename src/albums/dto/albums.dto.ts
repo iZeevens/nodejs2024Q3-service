@@ -1,5 +1,4 @@
 import { IsNumber, IsOptional, IsString, ValidateIf } from 'class-validator';
-import { Artist } from 'src/artists/entities/artist.entity';
 
 class CreateAlbum {
   @IsString()
@@ -10,7 +9,7 @@ class CreateAlbum {
 
   @ValidateIf((_, value) => value !== null)
   @IsString()
-  artistId: Artist | null;
+  artistId: string | null;
 }
 
 class UpdateAlbum {
@@ -25,7 +24,7 @@ class UpdateAlbum {
   @IsOptional()
   @ValidateIf((_, value) => value !== null)
   @IsString()
-  artistId: Artist | null;
+  artistId: string | null;
 }
 
 export { CreateAlbum, UpdateAlbum };

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist as ArtistEntity } from './entities/artist.entity';
-import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
-import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
+// import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
+// import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateArtistDto, UpdateArtistDto } from './dto/artists.dto';
@@ -13,12 +13,6 @@ export default class ArtistsService {
   constructor(
     @InjectRepository(ArtistEntity)
     private artistsRepository: Repository<ArtistEntity>,
-
-    @InjectRepository(AlbumEntity)
-    private albumRepository: Repository<AlbumEntity>,
-
-    @InjectRepository(TrackEntity)
-    private trackRepository: Repository<TrackEntity>,
   ) {}
 
   async getArtists(res: Response) {
