@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Favorites } from 'src/favorites/entities/favorite.entity';
 import { Track } from 'src/tracks/entities/track.entitiy';
+import { Artist } from 'src/artists/entities/artist.entity';
 
 @Entity()
 export class Album {
@@ -28,6 +29,11 @@ export class Album {
     onDelete: 'CASCADE',
   })
   favorites: Favorites;
+
+  @ManyToOne(() => Artist, (artist) => artist.id, {
+    onDelete: 'SET NULL',
+  })
+  artist;
 
   @OneToMany(() => Track, (track) => track.albumId, {
     onDelete: 'SET NULL',

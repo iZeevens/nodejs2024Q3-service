@@ -30,7 +30,7 @@ export class Artist {
   })
   tracks;
 
-  @OneToMany(() => Album, (album) => album.artistId, {
+  @OneToMany(() => Album, (album) => album.artist, {
     onDelete: 'SET NULL',
   })
   artist;
