@@ -117,20 +117,20 @@ export default class FavoritesService {
     return res.status(201).json(item);
   }
 
-  // deleteFromFavs(
-  //   id: string,
-  //   type: 'track' | 'artist' | 'album',
-  //   res: Response,
-  // ) {
-  //   const isExist = this.favoritesRepository.findOne({
-  //     where: { [type]: { id } },
-  //   });
+  async deleteFromFavs(
+    id: string,
+    type: 'tracks' | 'artists' | 'albums',
+    res: Response,
+  ) {
+    const favorites = await this.favoritesRepository.findOne({ where: {} });
 
-  //   if (!isExist) {
-  //     return res.status(422).json({ message: `${type} not found` });
-  //   }
+    if (!favorites) {
+      return res.status(422).json({ message: `${type} not found` });
+    }
 
-  //   this.favoritesRepository.delete({ [type]: { id } });
-  //   return res.status(204).json(undefined);
-  // }
+    favorites[type] = favorites[type].filter((favId) => favId !== id);
+
+    await this.favoritesRepository.save(favorites);
+    return res.status(204).json(undefined);
+  }
 }
