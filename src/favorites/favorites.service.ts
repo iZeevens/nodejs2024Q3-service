@@ -38,49 +38,43 @@ export default class FavoritesService {
     }
   }
 
-  private getRelationsByType(type: 'artists' | 'albums' | 'tracks'): string[] {
-    switch (type) {
-      case 'artists':
-        return [];
-      case 'albums':
-        return ['artistId'];
-      case 'tracks':
-        return ['artistId', 'albumId'];
-      default:
-        return [];
-    }
-  }
-
-  private async helperFindResult<
-    T extends TrackEntity | AlbumEntity | ArtistEntity,
-  >(type: 'artists' | 'albums' | 'tracks') {
+  async findAll(res: Response) {
     const favorites = await this.favoritesRepository.findOne({
       where: {},
-      select: [type],
+      select: ['tracks', 'albums', 'artists'],
     });
 
-    const ids = favorites?.[type] || [];
-    const repository = this.getRepositoryByType(type);
-    const relations = this.getRelationsByType(type);
+    if (!favorites) {
+      return ResponseHelper.sendOk(res, {
+        tracks: [],
+        albums: [],
+        artists: [],
+      });
+    }
 
-    const result = await repository.find({
-      where: {
-        id: In(ids),
-      },
-      relations,
-    });
+    const [tracks, albums, artists] = await Promise.all([
+      this.trackRepository.find({
+        where: { id: In(favorites.tracks || []) },
+        relations: ['artistId', 'albumId'],
+      }),
+      this.albumRepository.find({
+        where: { id: In(favorites.albums || []) },
+        relations: ['artistId'],
+      }),
+      this.artistsRepository.find({
+        where: { id: In(favorites.artists || []) },
+      }),
+    ]);
 
-    const mappedResult = mappedResultRelations(result, type);
+    const tracksResult = mappedResultRelations(tracks, 'tracks');
+    const albumsResult = mappedResultRelations(albums, 'albums');
+    const artistsResult = mappedResultRelations(artists, 'artists');
 
-    return mappedResult as T[];
-  }
-
-  async getFavorites(res: Response) {
-    const artists = await this.helperFindResult<ArtistEntity>('artists');
-    const albums = await this.helperFindResult<AlbumEntity>('albums');
-    const tracks = await this.helperFindResult<TrackEntity>('tracks');
-
-    const result = { artists, albums, tracks };
+    const result = {
+      tracks: tracksResult,
+      albums: albumsResult,
+      artists: artistsResult,
+    };
 
     return ResponseHelper.sendOk(res, result);
   }

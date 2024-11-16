@@ -16,7 +16,7 @@ export default class FavoritesController {
 
   @Get()
   findAll(@Res() res: Response) {
-    return this.favoritesService.getFavorites(res);
+    return this.favoritesService.findAll(res);
   }
 
   @Post('track/:id')
