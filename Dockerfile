@@ -1,4 +1,5 @@
-FROM node:22-alpine3.18
+# Step 1: Build stage
+FROM node:22-alpine3.18 AS build
 
 WORKDIR /app
 
@@ -10,6 +11,16 @@ COPY . .
 
 RUN npm run build
 
+FROM node:22-alpine3.18 AS production
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --omit=dev && npm cache clean --force
+
+COPY --from=build /app/dist ./dist
+
 EXPOSE 4000
 
-CMD ["sh", "-c", "npm run build && npm run migration:run && npm run start:dev"]
+CMD ["sh", "-c", "npm run migration:run && npm run start:prod"]
