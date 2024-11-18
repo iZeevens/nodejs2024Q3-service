@@ -5,8 +5,16 @@ services:
     image: nextjs-app
     build:
       context: .
-      target: dev
       dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
     ports:
       - '${PORT}:${PORT}'
     restart: always
@@ -19,6 +27,8 @@ services:
       - postgres
     env_file:
       - .env
+    networks:
+      - network
 
   postgres:
     image: postgres:latest
@@ -33,6 +43,12 @@ services:
       - postgres_logs:/var/log/postgresql
     env_file:
       - .env
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
 
 volumes:
   postgres_data:
