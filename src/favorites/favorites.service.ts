@@ -50,15 +50,19 @@ export default class FavoritesService {
       });
       await this.favoritesRepository.save(favorites);
     }
+
+    return favorites;
   }
 
   async findAll(res: Response) {
-    const favorites = await this.favoritesRepository.findOne({
+    let favorites = await this.favoritesRepository.findOne({
       where: { id: this.id },
       relations: ['tracks', 'albums', 'artists'],
     });
 
-    this.checkRepoExist(favorites);
+    console.log(favorites);
+
+    favorites = await this.checkRepoExist(favorites);
 
     const [tracks, albums, artists] = await Promise.all([
       this.trackRepository.find({
@@ -76,9 +80,9 @@ export default class FavoritesService {
     const artistsResult = mappedResultRelations(artists, 'artists');
 
     const result = {
-      tracks: tracksResult,
-      albums: albumsResult,
-      artists: artistsResult,
+      tracks: tracksResult || [],
+      albums: albumsResult || [],
+      artists: artistsResult || [],
     };
 
     return ResponseHelper.sendOk(res, result);
@@ -96,12 +100,12 @@ export default class FavoritesService {
       return res.status(422).json({ message: `${type} not found` });
     }
 
-    const favorites = await this.favoritesRepository.findOne({
+    let favorites = await this.favoritesRepository.findOne({
       where: { id: this.id },
       relations: [type],
     });
 
-    this.checkRepoExist(favorites);
+    favorites = await this.checkRepoExist(favorites);
 
     const favoriteType = favorites[type];
     favoriteType.push(item as any);
