@@ -40,11 +40,25 @@ export default class FavoritesService {
     }
   }
 
+  private async checkRepoExist(favorites: FavoritesEntity) {
+    if (!favorites) {
+      favorites = this.favoritesRepository.create({
+        id: this.id,
+        artists: [],
+        albums: [],
+        tracks: [],
+      });
+      await this.favoritesRepository.save(favorites);
+    }
+  }
+
   async findAll(res: Response) {
     const favorites = await this.favoritesRepository.findOne({
       where: { id: this.id },
       relations: ['tracks', 'albums', 'artists'],
     });
+
+    this.checkRepoExist(favorites);
 
     const [tracks, albums, artists] = await Promise.all([
       this.trackRepository.find({
@@ -86,6 +100,8 @@ export default class FavoritesService {
       where: { id: this.id },
       relations: [type],
     });
+
+    this.checkRepoExist(favorites);
 
     const favoriteType = favorites[type];
     favoriteType.push(item as any);
