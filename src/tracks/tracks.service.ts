@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { Response } from 'express';
 import { CreateTrackDto, UpdateTrackDto } from './dto/tracks.dto';
 import ResponseHelper from 'src/helpers/responseHelper';
-import { mappedResultRelations } from 'src/helpers/mappedResultRelations';
 
 @Injectable()
 export default class TracksService {
@@ -17,9 +16,7 @@ export default class TracksService {
   async findAll(res: Response) {
     const result = await this.tracksRepository.find();
 
-    const mappedResult = mappedResultRelations(result, 'tracks');
-
-    return ResponseHelper.sendOk(res, mappedResult);
+    return ResponseHelper.sendOk(res, result);
   }
 
   async findById(id: string, res: Response) {

@@ -3,7 +3,6 @@ import { Favorites as FavoritesEntity } from './entities/favorite.entity';
 import { Artist as ArtistEntity } from 'src/artists/entities/artist.entity';
 import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
 import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
-import { mappedResultRelations } from 'src/helpers/mappedResultRelations';
 import { In, Repository } from 'typeorm';
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';
@@ -75,14 +74,11 @@ export default class FavoritesService {
         where: { id: In(favorites.artists.map((artist) => artist.id) || []) },
       }),
     ]);
-    const tracksResult = mappedResultRelations(tracks, 'tracks');
-    const albumsResult = mappedResultRelations(albums, 'albums');
-    const artistsResult = mappedResultRelations(artists, 'artists');
 
     const result = {
-      tracks: tracksResult || [],
-      albums: albumsResult || [],
-      artists: artistsResult || [],
+      tracks: tracks || [],
+      albums: albums || [],
+      artists: artists || [],
     };
 
     return ResponseHelper.sendOk(res, result);

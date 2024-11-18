@@ -5,7 +5,6 @@ import { Repository } from 'typeorm';
 import { CreateAlbum, UpdateAlbum } from './dto/albums.dto';
 import { Response } from 'express';
 import ResponseHelper from 'src/helpers/responseHelper';
-import { mappedResultRelations } from 'src/helpers/mappedResultRelations';
 @Injectable()
 export default class AlbumsService {
   constructor(
@@ -16,9 +15,7 @@ export default class AlbumsService {
   async findAll(res: Response) {
     const result = await this.albumsRepository.find();
 
-    const mappedResult = mappedResultRelations(result, 'albums');
-
-    return ResponseHelper.sendOk(res, mappedResult);
+    return ResponseHelper.sendOk(res, result);
   }
 
   async findById(id: string, res: Response) {
