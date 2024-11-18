@@ -24,9 +24,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "typeorm": "typeorm-ts-node-commonjs",
-    "migration:run": "npm run typeorm migration:run -- -d ./dist/data-source.js",
+    "docker:startw": "docker compose up",
+    "docker:start": "docker compose up -d",
+    "docker:stop": "docker compose up -d",
     "migration-create": "typeorm migration:create ./src/migrations/initDatabaseMigration",
-    "migration:generate": "npm run typeorm migration:generate -- ./src/migrations/initDatabaseMigration -d ./dist/data-source.js"
+    "migration:generate": "npm run typeorm migration:generate -- ./src/migrations/initDatabaseMigration -d ./dist/data-source.js",
+    "migration:run": "npm run typeorm migration:run -- -d ./dist/data-source.js"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

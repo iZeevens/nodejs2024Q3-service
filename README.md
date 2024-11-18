@@ -29,14 +29,34 @@ in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Using Docker
-To run the application with Docker:
-1. ```docker compose build```
 
-Start the Application:
-2. ```docker compose up```
+Start the Application with watching:
+1. ```npm run docker:startw```
+
+Start the Application without watching:
+2. ```npm run docker:start```
 
 Stop the Application:
-3. ```docker compose down```
+3. ```npm run docker:stop```
+
+### Migration
+
+For creating migration you need go to inside container
+``` docker exec -it <container_id> sh ```
+than you can run command
+```
+migration-create
+```
+
+```
+migration:generate
+```
+
+```
+migration:run
+```
+
+
 
 ## Testing
 

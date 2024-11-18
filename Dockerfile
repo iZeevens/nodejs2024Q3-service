@@ -12,4 +12,4 @@ RUN npm run build
 
 EXPOSE 4000
 
-CMD ["sh", "-c", "npm run migration:run && npm run start:dev"]
+CMD ["sh", "-c", "npm run build && npm run migration:run && npm run start:dev"]
