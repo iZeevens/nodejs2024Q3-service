@@ -17,6 +17,8 @@ services:
       - /app/node_modules
     depends_on:
       - postgres
+    env_file:
+      - .env
 
   postgres:
     image: postgres:latest
@@ -29,6 +31,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_logs:/var/log/postgresql
+    env_file:
+      - .env
 
 volumes:
   postgres_data:
