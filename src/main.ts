@@ -22,8 +22,11 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.useLogger(app.get(CustomLogger));
-  app.useGlobalFilters(new HttpExceptionFilter(app.get(CustomLogger)));
+
+  const customLogger = app.get(CustomLogger);
+  app.useLogger(customLogger);
+  app.useGlobalFilters(new HttpExceptionFilter(customLogger));
+
   await app.listen(process.env.PORT);
 }
 bootstrap();
