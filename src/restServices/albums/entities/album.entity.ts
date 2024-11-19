@@ -6,8 +6,8 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Favorites } from 'src/favorites/entities/favorite.entity';
-import { Track } from 'src/tracks/entities/track.entitiy';
-import { Artist } from 'src/artists/entities/artist.entity';
+import { Track } from 'src/restServices/tracks/entities/track.entitiy';
+import { Artist } from 'src/restServices/artists/entities/artist.entity';
 
 @Entity()
 export class Album {

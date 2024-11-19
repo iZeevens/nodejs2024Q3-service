@@ -1,7 +1,7 @@
-import { User } from 'src/users/interfaces/user.interface';
-import { Artist } from 'src/artists/interfaces/artist.interfaces';
-import { Track } from 'src/tracks/interfaces/track.interface';
-import { Album } from 'src/albums/interfaces/album.interface';
+import { User } from 'src/restServices/users/interfaces/user.interface';
+import { Artist } from 'src/restServices/artists/interfaces/artist.interfaces';
+import { Track } from 'src/restServices/tracks/interfaces/track.interface';
+import { Album } from 'src/restServices/albums/interfaces/album.interface';
 import { Favorites } from 'src/favorites/interfaces/favorite.interface';
 interface DBTypes {
   user: User[];

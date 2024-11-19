@@ -1,8 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Favorites as FavoritesEntity } from './entities/favorite.entity';
-import { Artist as ArtistEntity } from 'src/artists/entities/artist.entity';
-import { Album as AlbumEntity } from 'src/albums/entities/album.entity';
-import { Track as TrackEntity } from 'src/tracks/entities/track.entitiy';
+import { Artist as ArtistEntity } from 'src/restServices/artists/entities/artist.entity';
+import { Album as AlbumEntity } from 'src/restServices/albums/entities/album.entity';
+import { Track as TrackEntity } from 'src/restServices/tracks/entities/track.entitiy';
 import { In, Repository } from 'typeorm';
 import { Response } from 'express';
 import { Injectable } from '@nestjs/common';

@@ -1,6 +1,6 @@
-import { Artist } from 'src/artists/interfaces/artist.interfaces';
-import { Album } from 'src/albums/interfaces/album.interface';
-import { Track } from 'src/tracks/interfaces/track.interface';
+import { Artist } from 'src/restServices/artists/interfaces/artist.interfaces';
+import { Album } from 'src/restServices/albums/interfaces/album.interface';
+import { Track } from 'src/restServices/tracks/interfaces/track.interface';
 
 interface Favorites {
   artists: string[]; // favorite artists ids

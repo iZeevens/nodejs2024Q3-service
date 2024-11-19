@@ -1,9 +1,9 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { User } from './users/entities/user.entity';
-import { Artist } from './artists/entities/artist.entity';
-import { Track } from './tracks/entities/track.entitiy';
-import { Album } from './albums/entities/album.entity';
-import { Favorites } from './favorites/entities/favorite.entity';
+import { User } from './restServices/users/entities/user.entity';
+import { Artist } from './restServices/artists/entities/artist.entity';
+import { Track } from './restServices/tracks/entities/track.entitiy';
+import { Album } from './restServices/albums/entities/album.entity';
+import { Favorites } from './restServices/favorites/entities/favorite.entity';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
