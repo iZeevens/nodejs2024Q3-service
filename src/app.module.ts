@@ -6,7 +6,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { CustomLogger } from './common/logging/logging.service';
+import { LoggerModule } from './common/logging/logging.module';
 
 @Module({
   imports: [
@@ -15,8 +15,8 @@ import { CustomLogger } from './common/logging/logging.service';
     TracksModule,
     AlbumsModule,
     FavoritesModule,
+    LoggerModule,
     TypeOrmModule.forRoot(dbSource),
   ],
-  providers: [CustomLogger],
 })
 export class AppModule {}
