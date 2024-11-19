@@ -25,6 +25,16 @@ async function bootstrap() {
   );
 
   const customLogger = app.get(CustomLogger);
+
+  process
+    .on('unhandledRejection', (reason) => {
+      customLogger.error(`Unhandled Rejection: ${reason}`);
+    })
+    .on('uncaughtException', (err) => {
+      customLogger.error(`Uncaught Exception: ${err.message}`);
+      process.exit(1);
+    });
+
   app.useLogger(customLogger);
   app.useGlobalFilters(
     new HttpExceptionFilter(app.get(HttpAdapterHost), customLogger),
