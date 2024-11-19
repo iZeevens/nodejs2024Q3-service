@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { CustomLogger } from './common/logging/logging.service';
 import { HttpExceptionFilter } from './common/exceptionFilter/exceptionFilter';
+import { HttpAdapterHost } from '@nestjs/core';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,7 +26,9 @@ async function bootstrap() {
 
   const customLogger = app.get(CustomLogger);
   app.useLogger(customLogger);
-  app.useGlobalFilters(new HttpExceptionFilter(customLogger));
+  app.useGlobalFilters(
+    new HttpExceptionFilter(app.get(HttpAdapterHost), customLogger),
+  );
 
   await app.listen(process.env.PORT);
 }

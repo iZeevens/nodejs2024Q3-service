@@ -7,6 +7,8 @@ import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { LoggerModule } from './common/logging/logging.module';
+import { MiddlewareConsumer } from '@nestjs/common';
+import { RequestLoggerMiddleware } from './common/logging/requestLoggerMiddleware';
 
 @Module({
   imports: [
@@ -19,4 +21,8 @@ import { LoggerModule } from './common/logging/logging.module';
     TypeOrmModule.forRoot(dbSource),
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
+}
