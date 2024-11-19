@@ -6,7 +6,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { TracksModule } from './tracks/tracks.module';
 import { AlbumsModule } from './albums/albums.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { CustomLogger } from './logging/logging.service';
+import { CustomLogger } from './common/logging/logging.service';
 
 @Module({
   imports: [
