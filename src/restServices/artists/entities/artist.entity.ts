@@ -5,7 +5,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Favorites } from 'src/favorites/entities/favorite.entity';
+import { Favorites } from 'src/restServices/favorites/entities/favorite.entity';
 import { Track } from 'src/restServices/tracks/entities/track.entitiy';
 import { Album } from 'src/restServices/albums/entities/album.entity';
 

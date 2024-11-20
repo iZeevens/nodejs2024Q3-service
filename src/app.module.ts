@@ -10,6 +10,7 @@ import { LoggerModule } from './common/logging/logging.module';
 import { MiddlewareConsumer } from '@nestjs/common';
 import { RequestLoggerMiddleware } from './common/logging/requestLoggerMiddleware';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConfigModule } from '@nestjs/config';
     AlbumsModule,
     FavoritesModule,
     LoggerModule,
+    AuthModule,
     TypeOrmModule.forRoot(dbSource),
   ],
 })
