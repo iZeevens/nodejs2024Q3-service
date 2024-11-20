@@ -14,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(createUser: CreateUserDto): Promise<{ token: string }> {
+  async signUp(createUser: CreateUserDto) {
     const { login, password } = createUser;
 
     const hashedPassword = await bycrypt.hash(password, 10);
@@ -29,11 +29,11 @@ export class AuthService {
     const user = this.usersRepository.create(userData);
     await this.usersRepository.save(user);
 
-    const token = this.jwtService.sign(userData);
-    return { token };
+    await this.jwtService.signAsync(userData);
+    return user;
   }
 
-  async login(loginUser: CreateUserDto): Promise<{ token: string }> {
+  async login(loginUser: CreateUserDto): Promise<{ accessToken: string }> {
     const { login, password } = loginUser;
     const user = await this.usersRepository.findOne({ where: { login } });
 
@@ -47,8 +47,8 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Login or Password');
     }
 
-    const token = this.jwtService.sign({ id: user.id });
+    const token = await this.jwtService.signAsync({ id: user.id });
 
-    return { token };
+    return { accessToken: token };
   }
 }
