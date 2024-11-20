@@ -41,7 +41,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Login or Password');
     }
 
-    const isPasswordMatched = bycrypt.compare(user.password, password);
+    const isPasswordMatched = await bycrypt.compare(password, user.password);
 
     if (!isPasswordMatched) {
       throw new UnauthorizedException('Invalid Login or Password');
