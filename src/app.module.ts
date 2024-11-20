@@ -9,9 +9,11 @@ import { FavoritesModule } from './restServices/favorites/favorites.module';
 import { LoggerModule } from './common/logging/logging.module';
 import { MiddlewareConsumer } from '@nestjs/common';
 import { RequestLoggerMiddleware } from './common/logging/requestLoggerMiddleware';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     ArtistsModule,
     TracksModule,
