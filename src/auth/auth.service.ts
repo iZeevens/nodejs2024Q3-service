@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User as UserEntity } from 'src/restServices/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -29,6 +29,25 @@ export class AuthService {
     await this.usersRepository.save(user);
 
     const token = this.jwtService.sign(user);
+
+    return { token };
+  }
+
+  async login(loginUser: CreateUserDto): Promise<{ token: string }> {
+    const { login, password } = loginUser;
+    const user = await this.usersRepository.findOne({ where: { login } });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid Login or Password');
+    }
+
+    const isPasswordMatched = bycrypt.compare(user.password, password);
+
+    if (!isPasswordMatched) {
+      throw new UnauthorizedException('Invalid Login or Password');
+    }
+
+    const token = this.jwtService.sign({ id: user.id });
 
     return { token };
   }
