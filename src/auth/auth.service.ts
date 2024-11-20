@@ -18,18 +18,18 @@ export class AuthService {
     const { login, password } = createUser;
 
     const hashedPassword = await bycrypt.hash(password, 10);
-
-    const user = this.usersRepository.create({
+    const userData = {
       login,
       password: hashedPassword,
       version: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+    };
+
+    const user = this.usersRepository.create(userData);
     await this.usersRepository.save(user);
 
-    const token = this.jwtService.sign(user);
-
+    const token = this.jwtService.sign(userData);
     return { token };
   }
 

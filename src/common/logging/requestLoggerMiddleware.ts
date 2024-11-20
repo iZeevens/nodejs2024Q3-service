@@ -1,7 +1,8 @@
-import { NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { CustomLogger } from './logging.service';
 
+@Injectable()
 export class RequestLoggerMiddleware implements NestMiddleware {
   constructor(private readonly logger: CustomLogger) {}
 
