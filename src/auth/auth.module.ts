@@ -24,7 +24,7 @@ import { AuthController } from './auth.controller';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

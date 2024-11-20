@@ -11,6 +11,9 @@ import { MiddlewareConsumer } from '@nestjs/common';
 import { RequestLoggerMiddleware } from './common/logging/requestLoggerMiddleware';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,6 +26,12 @@ import { AuthModule } from './auth/auth.module';
     LoggerModule,
     AuthModule,
     TypeOrmModule.forRoot(dbSource),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {
