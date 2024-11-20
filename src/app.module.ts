@@ -13,7 +13,6 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
-import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
