@@ -8,10 +8,12 @@ import {
   Post,
   Put,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto, UpdatePasswordDto } from './dto/users.dto';
 import { Response } from 'express';
 import UsersService from './users.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export default class UsersController {
@@ -33,6 +35,7 @@ export default class UsersController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   createUser(@Body() body: CreateUserDto, @Res() res: Response) {
     return this.usersService.createUser(body, res);
   }
