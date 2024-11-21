@@ -19,10 +19,12 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
   }
 
   private async writeFile(message: string, type: 'LOG' | 'ERROR' | 'WARN') {
-    const directoryPath = `./loggerData.txt`;
+    const directoryPath = `./loggerData`;
+    const filePath = `${directoryPath}/${type}.txt`;
     const logMessage = `[${new Date().toISOString()}] [${type}] ${message}\n`;
 
-    await fs.appendFile(directoryPath, logMessage, {
+    await fs.mkdir(directoryPath, { recursive: true });
+    await fs.appendFile(filePath, logMessage, {
       encoding: 'utf8',
     });
   }

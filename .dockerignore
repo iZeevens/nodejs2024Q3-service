@@ -6,4 +6,4 @@ docker-compose.yml
 postgresDB 
 logs
 README.md
-loggerData.txt
+loggerData
