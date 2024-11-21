@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/restServices/users/dto/users.dto';
 import * as bycrypt from 'bcrypt';
+import { User } from 'src/restServices/users/interfaces/user.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +14,7 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
     private jwtService: JwtService,
+    private ConfigService: ConfigService,
   ) {}
 
   async signUp(createUser: CreateUserDto) {
@@ -29,7 +32,7 @@ export class AuthService {
     const user = this.usersRepository.create(userData);
     await this.usersRepository.save(user);
 
-    await this.jwtService.signAsync(userData);
+    await this.getTokens(user.id);
     return user;
   }
 
@@ -47,8 +50,29 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Login or Password');
     }
 
-    const token = await this.jwtService.signAsync({ id: user.id });
+    const tokens = await this.getTokens(user.id);
 
-    return { accessToken: token };
+    return tokens;
+  }
+
+  private async getTokens(id: string) {
+    const [accessToken, refreshToken] = await Promise.all([
+      await this.jwtService.signAsync(
+        { id },
+        {
+          secret: this.ConfigService.get('JWT_SECRET_KEY'),
+          expiresIn: this.ConfigService.get('TOKEN_EXPIRE_TIME'),
+        },
+      ),
+      await this.jwtService.signAsync(
+        { id },
+        {
+          secret: this.ConfigService.get('JWT_SECRET_REFRESH_KEY'),
+          expiresIn: this.ConfigService.get('TOKEN_REFRESH_EXPIRE_TIME'),
+        },
+      ),
+    ]);
+
+    return { accessToken, refreshToken };
   }
 }
