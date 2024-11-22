@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/restServices/users/dto/users.dto';
 import { Public } from './auth.public';
@@ -17,5 +17,12 @@ export class AuthController {
   @Post('login')
   login(@Body() body: CreateUserDto): Promise<{ accessToken: string }> {
     return this.authService.login(body);
+  }
+
+  @Public()
+  @Post('refresh')
+  @HttpCode(200)
+  refresh(@Body() body: { refreshToken: string }) {
+    return this.authService.refreshTokens(body.refreshToken);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User as UserEntity } from 'src/restServices/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -52,6 +56,27 @@ export class AuthService {
     const tokens = await this.getTokens(user.id);
 
     return tokens;
+  }
+
+  async refreshTokens(refreshToken: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
+      });
+      const { id } = payload;
+
+      const user = await this.usersRepository.findOne({ where: { id } });
+      if (!user) {
+        throw new ForbiddenException('Invalid refresh token');
+      }
+
+      return await this.getTokens(user.id);
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new ForbiddenException('Refresh token expired');
+      }
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
   private async getTokens(id: string) {
