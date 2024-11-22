@@ -59,6 +59,10 @@ export class AuthService {
   }
 
   async refreshTokens(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token is required');
+    }
+
     try {
       const payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
@@ -72,29 +76,31 @@ export class AuthService {
 
       return await this.getTokens(user.id);
     } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        throw new ForbiddenException('Refresh token expired');
-      }
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new ForbiddenException('Invalid refresh token');
     }
   }
 
   private async getTokens(id: string) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const payload = {
+      userId: user.id,
+      login: user.login,
+    };
+
     const [accessToken, refreshToken] = await Promise.all([
-      await this.jwtService.signAsync(
-        { id },
-        {
-          secret: this.configService.get('JWT_SECRET_KEY'),
-          expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
-        },
-      ),
-      await this.jwtService.signAsync(
-        { id },
-        {
-          secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
-          expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
-        },
-      ),
+      await this.jwtService.signAsync(payload, {
+        secret: this.configService.get('JWT_SECRET_KEY'),
+        expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
+      }),
+      await this.jwtService.signAsync(payload, {
+        secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
+        expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
+      }),
     ]);
 
     return { accessToken, refreshToken };
