@@ -2,28 +2,50 @@ import { ConsoleLogger, Injectable, LoggerService } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import { stat } from 'fs/promises';
 import { join } from 'path';
+import { ConfigService } from '@nestjs/config';
 
+type TypeFile = 'LOG' | 'ERROR' | 'WARN' | 'DEBUG' | 'VERBOSE';
 @Injectable()
 export class CustomLogger extends ConsoleLogger implements LoggerService {
+  constructor(private configService: ConfigService) {
+    super();
+  }
+
   async log(message: any, ...optionalParams: any[]) {
-    super.log(message, ...optionalParams);
-    await this.writeFile(message, 'LOG');
+    if (this.configService.get('LOGGER_LEVEL') >= 0) {
+      super.log(message, ...optionalParams);
+      await this.writeFile(message, 'LOG');
+    }
   }
 
   async error(message: any, ...optionalParams: any[]) {
-    super.warn(message, ...optionalParams);
-    await this.writeFile(message, 'ERROR');
+    if (this.configService.get('LOGGER_LEVEL') >= 1) {
+      super.warn(message, ...optionalParams);
+      await this.writeFile(message, 'ERROR');
+    }
   }
 
   async warn(message: any, ...optionalParams: any[]) {
-    super.warn(message, ...optionalParams);
-    await this.writeFile(message, 'WARN');
+    if (this.configService.get('LOGGER_LEVEL') >= 2) {
+      super.warn(message, ...optionalParams);
+      await this.writeFile(message, 'WARN');
+    }
+  }
+
+  async debug(message: any, ...optionalParams: any[]) {
+    super.debug(message, ...optionalParams);
+    await this.writeFile(message, 'DEBUG');
+  }
+
+  async verbose(message: any, ...optionalParams: any[]) {
+    super.verbose(message, ...optionalParams);
+    await this.writeFile(message, 'VERBOSE');
   }
 
   private async rotateFile(
     filePath: string,
     directoryPath: string,
-    type: 'LOG' | 'ERROR' | 'WARN',
+    type: TypeFile,
   ) {
     try {
       const stats = await stat(filePath);
@@ -43,7 +65,7 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
     }
   }
 
-  private async writeFile(message: string, type: 'LOG' | 'ERROR' | 'WARN') {
+  private async writeFile(message: string, type: TypeFile) {
     const directoryPath = `./loggerData`;
     const filePath = join(directoryPath, `${type}.txt`);
     const logMessage = `[${new Date().toISOString()}] [${type}] ${message}\n`;

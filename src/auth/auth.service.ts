@@ -13,7 +13,7 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
     private jwtService: JwtService,
-    private ConfigService: ConfigService,
+    private configService: ConfigService,
   ) {}
 
   async signUp(createUser: CreateUserDto) {
@@ -59,15 +59,15 @@ export class AuthService {
       await this.jwtService.signAsync(
         { id },
         {
-          secret: this.ConfigService.get('JWT_SECRET_KEY'),
-          expiresIn: this.ConfigService.get('TOKEN_EXPIRE_TIME'),
+          secret: this.configService.get('JWT_SECRET_KEY'),
+          expiresIn: this.configService.get('TOKEN_EXPIRE_TIME'),
         },
       ),
       await this.jwtService.signAsync(
         { id },
         {
-          secret: this.ConfigService.get('JWT_SECRET_REFRESH_KEY'),
-          expiresIn: this.ConfigService.get('TOKEN_REFRESH_EXPIRE_TIME'),
+          secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
+          expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
         },
       ),
     ]);
