@@ -1,4 +1,9 @@
-import { ConsoleLogger, Injectable, LoggerService } from '@nestjs/common';
+import {
+  ConsoleLogger,
+  Injectable,
+  LoggerService,
+  LogLevel,
+} from '@nestjs/common';
 import { promises as fs } from 'fs';
 import { stat } from 'fs/promises';
 import { join } from 'path';
@@ -7,39 +12,63 @@ import { ConfigService } from '@nestjs/config';
 type TypeFile = 'LOG' | 'ERROR' | 'WARN' | 'DEBUG' | 'VERBOSE';
 @Injectable()
 export class CustomLogger extends ConsoleLogger implements LoggerService {
+  private activeLogLevels: LogLevel[];
+
   constructor(private configService: ConfigService) {
     super();
+    this.setLogsByLevelLogger();
   }
 
   async log(message: any, ...optionalParams: any[]) {
-    if (this.configService.get('LOGGER_LEVEL') >= 0) {
+    if (this.isLevelEnabled('log')) {
       super.log(message, ...optionalParams);
       await this.writeFile(message, 'LOG');
     }
   }
 
   async error(message: any, ...optionalParams: any[]) {
-    if (this.configService.get('LOGGER_LEVEL') >= 1) {
+    if (this.isLevelEnabled('error')) {
       super.warn(message, ...optionalParams);
       await this.writeFile(message, 'ERROR');
     }
   }
 
   async warn(message: any, ...optionalParams: any[]) {
-    if (this.configService.get('LOGGER_LEVEL') >= 2) {
+    if (this.isLevelEnabled('warn')) {
       super.warn(message, ...optionalParams);
       await this.writeFile(message, 'WARN');
     }
   }
 
   async debug(message: any, ...optionalParams: any[]) {
-    super.debug(message, ...optionalParams);
-    await this.writeFile(message, 'DEBUG');
+    if (this.isLevelEnabled('debug')) {
+      super.debug(message, ...optionalParams);
+      await this.writeFile(message, 'DEBUG');
+    }
   }
 
   async verbose(message: any, ...optionalParams: any[]) {
-    super.verbose(message, ...optionalParams);
-    await this.writeFile(message, 'VERBOSE');
+    if (this.isLevelEnabled('verbose')) {
+      super.verbose(message, ...optionalParams);
+      await this.writeFile(message, 'VERBOSE');
+    }
+  }
+
+  private setLogsByLevelLogger() {
+    const level = this.configService.get('LOGGER_LEVEL') || 0;
+    const allLogLevels: LogLevel[] = [
+      'log',
+      'error',
+      'warn',
+      'debug',
+      'verbose',
+    ];
+
+    this.activeLogLevels = allLogLevels.slice(0, level + 1);
+  }
+
+  isLevelEnabled(level: LogLevel) {
+    return this.activeLogLevels.includes(level);
   }
 
   private async rotateFile(
